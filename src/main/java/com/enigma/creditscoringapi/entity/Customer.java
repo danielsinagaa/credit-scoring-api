@@ -10,6 +10,12 @@ import javax.persistence.*;
 @Entity
 @Table
 @Data
+@NamedQuery(name = "Customer.findAllContract",
+    query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT")
+@NamedQuery(name = "Customer.findAllNon",
+        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.NON")
+@NamedQuery(name = "Customer.findAllRegular",
+        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Customer extends TimeStamp {
     @GeneratedValue(generator = "customer_id", strategy = GenerationType.IDENTITY)

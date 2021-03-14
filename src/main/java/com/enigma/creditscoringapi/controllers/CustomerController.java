@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -106,64 +107,43 @@ public class CustomerController {
     public ResponseMessage findAll(PageSearch search){
         Page<Customer> entityPage = service.findAll(new Customer(), search.getPage(), search.getSize(), search.getSort());
 
-        List<Customer> entities = entityPage.toList();
-
-        List<CustomerResponse> responses = entities.stream()
-                .map(e -> modelMapper.map(e, CustomerResponse.class))
-                .collect(Collectors.toList());
-
-        PagedList<CustomerResponse> response = new PagedList(responses, entityPage.getNumber(),
-                entityPage.getSize(), entityPage.getTotalElements());
-
-        return ResponseMessage.success(response);
+        return getResponseMessage(entityPage);
     }
 
     @GetMapping("/non")
     public ResponseMessage non(PageSearch search){
-        Page<Customer> entityPage = service.findAll(new Customer(), search.getPage(), search.getSize(), search.getSort());
+        Page<Customer> entityPage = service.findAllNon(search.getPage(), search.getSize(), search.getSort());
 
-        List<Customer> entities = entityPage.toList();
-
-        entities = entities.stream()
-                .filter(e -> e.getEmployeeType() == EmployeeType.NON).collect(Collectors.toList());
-
-        List<CustomerResponse> responses = entities.stream()
-                .map(e -> modelMapper.map(e, CustomerResponse.class))
-                .collect(Collectors.toList());
-
-        PagedList<CustomerResponse> response = new PagedList(responses, entityPage.getNumber(),
-                entityPage.getSize(), entityPage.getTotalElements());
-
-        return ResponseMessage.success(response);
+        return getResponseMessage(entityPage);
     }
 
     @GetMapping("/contract")
-    public ResponseMessage contract(PageSearch search){
-        Page<Customer> entityPage = service.findAll(new Customer(), search.getPage(), search.getSize(), search.getSort());
-
+    public ResponseMessage findAlltype(@Valid PageSearch request) {
+        Page<Customer> entityPage = service.findAllContract(request.getPage(),
+                request.getSize(), request.getSort());
         List<Customer> entities = entityPage.toList();
 
-        entities = entities.stream()
-                .filter(e -> e.getEmployeeType() == EmployeeType.CONTRACT).collect(Collectors.toList());
-
-        List<CustomerResponse> responses = entities.stream()
+        List<CustomerResponse> models = entities.stream()
                 .map(e -> modelMapper.map(e, CustomerResponse.class))
                 .collect(Collectors.toList());
 
-        PagedList<CustomerResponse> response = new PagedList(responses, entityPage.getNumber(),
-                entityPage.getSize(), entityPage.getTotalElements());
+        PagedList<CustomerResponse> data = new PagedList(models,
+                entityPage.getNumber(), entityPage.getSize(),
+                entityPage.getTotalElements());
 
-        return ResponseMessage.success(response);
+        return ResponseMessage.success(data);
     }
+
 
     @GetMapping("/regular")
     public ResponseMessage regular(PageSearch search){
-        Page<Customer> entityPage = service.findAll(new Customer(), search.getPage(), search.getSize(), search.getSort());
+        Page<Customer> entityPage = service.findAllRegular(search.getPage(), search.getSize(), search.getSort());
 
+        return getResponseMessage(entityPage);
+    }
+
+    private ResponseMessage getResponseMessage(Page<Customer> entityPage) {
         List<Customer> entities = entityPage.toList();
-
-        entities = entities.stream()
-                .filter(e -> e.getEmployeeType() == EmployeeType.REGULAR).collect(Collectors.toList());
 
         List<CustomerResponse> responses = entities.stream()
                 .map(e -> modelMapper.map(e, CustomerResponse.class))
