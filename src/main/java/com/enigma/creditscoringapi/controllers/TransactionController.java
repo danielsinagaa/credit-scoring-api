@@ -5,6 +5,7 @@ import com.enigma.creditscoringapi.entity.Transaction;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.ContractResponse;
 import com.enigma.creditscoringapi.models.TransactionRequest;
+import com.enigma.creditscoringapi.models.TransactionResponseExt;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
@@ -110,11 +111,11 @@ public class TransactionController {
 
         List<Transaction> entities = entityPage.toList();
 
-        List<TransactionResponse> responses = entities.stream()
-                .map(e -> modelMapper.map(e, TransactionResponse.class))
+        List<TransactionResponseExt> responses = entities.stream()
+                .map(e -> modelMapper.map(e, TransactionResponseExt.class))
                 .collect(Collectors.toList());
 
-        PagedList<TransactionResponse> response = new PagedList(responses, entityPage.getNumber(),
+        PagedList<TransactionResponseExt> response = new PagedList(responses, entityPage.getNumber(),
                 entityPage.getSize(), entityPage.getTotalElements());
 
         return ResponseMessage.success(response);
