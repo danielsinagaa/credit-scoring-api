@@ -10,6 +10,12 @@ public class CustomerResponse {
 
     private String name;
 
+    private Long idNumber;
+
+    private String email;
+
+    private String address;
+
     private EmployeeType employeeType;
 
     private NeedType needType;

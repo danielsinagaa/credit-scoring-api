@@ -65,6 +65,10 @@ public class TransactionController {
 
         entity.setInstallment(installment);
 
+        Double installmentTotal = installment * request.getTenor();
+
+        entity.setInstallmentTotal(installmentTotal);
+
         Double creditRatio = ((installment + request.getOutcome())/ request.getIncome()) * 100;
 
         entity.setCreditRatio(creditRatio);
@@ -100,6 +104,21 @@ public class TransactionController {
         if (entity == null) {
             throw new EntityNotFoundException();
         }
+        TransactionResponse response = modelMapper.map(entity, TransactionResponse.class);
+
+        return ResponseMessage.success(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseMessage deleteById(@PathVariable String id){
+        Transaction entity = service.findById(id);
+
+        if (entity == null) {
+            throw new EntityNotFoundException();
+        }
+
+        service.removeById(id);
+
         TransactionResponse response = modelMapper.map(entity, TransactionResponse.class);
 
         return ResponseMessage.success(response);

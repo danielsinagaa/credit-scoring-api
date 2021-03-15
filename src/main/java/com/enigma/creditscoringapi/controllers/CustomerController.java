@@ -64,13 +64,16 @@ public class CustomerController {
         }
 
         service.save(entity);
+
         response.setId(entity.getId());
+
         return ResponseMessage.success(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseMessage deleteById(@PathVariable String id){
         Customer entity = service.removeById(id);
+
         if (entity == null) {
             throw new EntityNotFoundException();
         }
@@ -123,11 +126,11 @@ public class CustomerController {
                 request.getSize(), request.getSort());
         List<Customer> entities = entityPage.toList();
 
-        List<CustomerResponse> models = entities.stream()
-                .map(e -> modelMapper.map(e, CustomerResponse.class))
+        List<ContractResponse> models = entities.stream()
+                .map(e -> modelMapper.map(e, ContractResponse.class))
                 .collect(Collectors.toList());
 
-        PagedList<CustomerResponse> data = new PagedList(models,
+        PagedList<ContractResponse> data = new PagedList(models,
                 entityPage.getNumber(), entityPage.getSize(),
                 entityPage.getTotalElements());
 

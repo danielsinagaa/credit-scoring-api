@@ -22,5 +22,7 @@ public class TransactionResponse {
 
     private Double interest;
 
+    private Double installmentTotal;
+
     private Double installment;
 }

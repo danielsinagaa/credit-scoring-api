@@ -43,10 +43,16 @@ public class Transaction extends TimeStamp{
     private Double installment;//angsuran
 
     @Column(nullable = false)
+    private Double installmentTotal;
+
+    @Column(nullable = false)
     private Integer interestRate;
 
     @Column(nullable = false)
     private Boolean financeCriteria;
+
+    @Column(nullable = false)
+    private String notes;
 
     @Column
     private Boolean employeeCriteria;

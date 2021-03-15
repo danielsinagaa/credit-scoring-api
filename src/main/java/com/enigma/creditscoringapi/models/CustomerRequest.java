@@ -12,6 +12,12 @@ public class CustomerRequest {
 
     private NeedType needType;
 
+    private Long idNumber;
+
+    private String email;
+
+    private String address;
+
     private String contractStart;
 
     private Integer contractLength;
