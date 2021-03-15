@@ -38,20 +38,22 @@ public class TransactionController {
         Transaction entity = modelMapper.map(request,Transaction.class);
 
         Customer customer = customerService.findById(request.getCustomer());
-        Double loan = Double.valueOf(request.getLoan()) / 2;
+        Double income = request.getIncome().doubleValue();
 
         entity.setCustomer(customer);
 
         switch (customer.getEmployeeType()){
             case CONTRACT:
             case NON:
-                loan = Double.valueOf(request.getLoan()) / 2;
+                income /= 2;
                 break;
             default:
-                loan = Double.valueOf(request.getLoan());
+                income = request.getIncome().doubleValue();
         }
 
-        Double mainLoan = loan / request.getTenor();
+        Double loan = request.getLoan().doubleValue();
+
+        Double mainLoan = request.getLoan().doubleValue() / request.getTenor();
 
         entity.setMainLoan(mainLoan);
 
@@ -69,7 +71,7 @@ public class TransactionController {
 
         entity.setInstallmentTotal(installmentTotal);
 
-        Double creditRatio = ((installment + request.getOutcome())/ request.getIncome()) * 100;
+        Double creditRatio = ((installment + request.getOutcome())/ income) * 100;
 
         entity.setCreditRatio(creditRatio);
 

@@ -6,6 +6,8 @@ import lombok.Data;
 public class TransactionRequest {
     private String customer;
 
+    private String notes;
+
     private Integer income;
 
     private Integer outcome;

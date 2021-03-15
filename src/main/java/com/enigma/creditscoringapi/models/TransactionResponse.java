@@ -6,6 +6,8 @@ import lombok.Data;
 public class TransactionResponse {
     private String id;
 
+    private String notes;
+
     private CustomerResponse customer;
 
     private Integer income;
