@@ -17,6 +17,8 @@ import com.enigma.creditscoringapi.services.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,6 +38,8 @@ public class CustomerController {
 
     @PostMapping
     public ResponseMessage add(@RequestBody CustomerRequest request){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String activeId = auth.getName();
 
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 

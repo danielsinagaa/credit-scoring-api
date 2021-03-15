@@ -33,8 +33,10 @@ public class Users {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column
+    private Boolean isVerified;
+
     @NotBlank
-    @Size(max = 120)
     @Column(nullable = false)
     private String password;
 
@@ -43,6 +45,12 @@ public class Users {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @Column(nullable = false)
+    @Column
     private LocalDate dateRegister;
+
+    @PrePersist
+    public void prepersist(){
+        dateRegister = LocalDate.now();
+        isVerified = false;
+    }
 }

@@ -106,7 +106,7 @@ public class TransactionController {
         if (entity == null) {
             throw new EntityNotFoundException();
         }
-        TransactionResponse response = modelMapper.map(entity, TransactionResponse.class);
+        TransactionResponseExt response = modelMapper.map(entity, TransactionResponseExt.class);
 
         return ResponseMessage.success(response);
     }
