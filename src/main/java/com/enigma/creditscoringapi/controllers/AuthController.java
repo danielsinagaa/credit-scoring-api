@@ -7,6 +7,7 @@ import com.enigma.creditscoringapi.models.JwtResponse;
 import com.enigma.creditscoringapi.models.LoginRequest;
 import com.enigma.creditscoringapi.models.MessageResponse;
 import com.enigma.creditscoringapi.models.SignUpRequest;
+import com.enigma.creditscoringapi.models.responses.ResponseMessage;
 import com.enigma.creditscoringapi.repository.UsersRepository;
 import com.enigma.creditscoringapi.security.jwt.JwtUtils;
 import com.enigma.creditscoringapi.security.service.UserDetailsImpl;
@@ -53,7 +54,7 @@ public class AuthController {
     PasswordEncoder encoder;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseMessage authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -66,26 +67,25 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(
+        JwtResponse response = new JwtResponse(
                 jwt,
-                userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                userDetails.getDateRegister(),
-                roles));
+                roles.get(0));
+
+        return ResponseMessage.success(response);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest request) throws IOException {
+    public ResponseMessage registerUser(@Valid @RequestBody SignUpRequest request) throws IOException {
 
         if (repository.existsByUsername(request.getUsername())){
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Username is already use"));
+
+            return new ResponseMessage(409, "not allowed", "ERROR: username is already use");
         }
 
         if (repository.existsByEmail(request.getEmail())){
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Email is already use"));
+            return new ResponseMessage(409, "not allowed", "ERROR: email is already use");
         }
 
         Users user = modelMapper.map(request, Users.class);
@@ -109,6 +109,6 @@ public class AuthController {
         user.setRoles(roles);
         repository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User Registered successfully"));
+        return ResponseMessage.success("User Registered successfully");
     }
 }
