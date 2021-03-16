@@ -92,7 +92,7 @@ public class AuthController {
         user.setPassword(encoder.encode(request.getPassword()));
         user.setIsVerified(false);
 
-        Set<String> strRoles = request.getRole();
+        String strRoles = request.getRole();
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
