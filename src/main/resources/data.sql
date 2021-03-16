@@ -1,13 +1,29 @@
-INSERT INTO users (id, email, is_verified, password, username, date_register)
-SELECT * FROM (SELECT 'f906a295847742309a4de4101dea0c55',
-                      'nieljrnaga@gmail.com',
-                      true,
-                      '$2a$10$S3cLT6z3D1AN4Xjgp2lc9.gAz4Kmx2cCHglv3p.EZt8Qz/H0.5KdK',
-                      'masteradmin',
-                      current_date) AS tmp
-WHERE NOT EXISTS (
-        SELECT users.username FROM users WHERE username = 'masteradmin'
-    ) LIMIT 1;
+-- INSERT INTO users (id, email, is_verified, password, username, date_register, active, fullname, profile_picture, verified_token)
+-- SELECT * FROM (SELECT 'f906a295847742309a4de4101dea0c55',
+--                       'solehsolihin2021@gmail.com',
+--                       true,
+--                       '$2a$10$S3cLT6z3D1AN4Xjgp2lc9.gAz4Kmx2cCHglv3p.EZt8Qz/H0.5KdK',
+--                       'masteradmin',
+--                       current_date,
+--                       true,
+--                       'natasha romanov',
+--                       'https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png',
+--                       'potatolalalala') AS tmp
+-- WHERE NOT EXISTS (
+--         SELECT users.username FROM users WHERE username = 'masteradmin'
+--     ) LIMIT 1;
+
+INSERT IGNORE users (id, email, is_verified, password, username, date_register, active, full_name, profile_picture, verified_token)
+VALUES ( 'f906a295847742309a4de4101dea0c55',
+        'solehsolihin2021@gmail.com',
+        true,
+        '$2a$10$1plWUsDFrI7KQtjN5g9skuN7aFwYiobMvgLN1PNirxQXSHMJ7wkfu',
+        'masteradmin',
+        current_date,
+        true,
+        'natasha romanov',
+        'https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png',
+        'potatolalalala');
 
 INSERT INTO role (id, name)
 SELECT * FROM (SELECT 'c30f9a16859611eb8dcd0242ac130003',

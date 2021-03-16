@@ -14,6 +14,10 @@ public class CustomerRequest {
 
     private Long idNumber;
 
+    private String idPhoto;
+
+    private String profilePhoto;
+
     private String email;
 
     private String address;

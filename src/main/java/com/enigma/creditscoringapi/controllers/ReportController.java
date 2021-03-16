@@ -1,9 +1,7 @@
 package com.enigma.creditscoringapi.controllers;
 
-import com.enigma.creditscoringapi.entity.Approval;
 import com.enigma.creditscoringapi.entity.TransactionReport;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
-import com.enigma.creditscoringapi.models.ApprovalResponse;
 import com.enigma.creditscoringapi.models.ReportResponse;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
@@ -12,14 +10,12 @@ import com.enigma.creditscoringapi.services.ReportService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RequestMapping("/report")
 @RestController
 public class ReportController {

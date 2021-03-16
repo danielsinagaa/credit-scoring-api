@@ -9,7 +9,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsersService {
+public class UsersService extends AbstractService<Users, String > {
+
+    public UsersService(UsersRepository repository) {
+        super(repository);
+    }
+
     @Autowired
     UsersRepository userRepository;
 
@@ -18,7 +23,7 @@ public class UsersService {
     }
 
     public Page<Users> getAllUserByUserName(Pageable pageable, Users user) {
-        return userRepository.findByUsernameContainsOrEmailContains(user.getUsername(),user.getEmail(),pageable);
+        return userRepository.findByUsernameContainsOrEmailContains(user.getUsername(), user.getEmail(), pageable);
     }
 
     public Users getUserById(String id) {
@@ -34,8 +39,12 @@ public class UsersService {
     }
 
     public Users getUserByUsername(String name) {
-        Users user =userRepository.findByUsername(name)
-                .orElseThrow(()->new UsernameNotFoundException("User Not Found with username: "+name));
+        Users user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + name));
         return user;
+    }
+
+    public Users findByToken(String token) {
+        return userRepository.findByVerifiedToken(token);
     }
 }

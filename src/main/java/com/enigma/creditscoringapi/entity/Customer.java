@@ -33,6 +33,15 @@ public class Customer extends TimeStamp {
     private String address;
 
     @Column(nullable = false)
+    private String idPhoto;
+
+    @Column(nullable = false)
+    private String profilePhoto;
+
+    @Column(nullable = false)
+    private String submitter;
+
+    @Column(nullable = false)
     private Long idNumber;
 
     @Enumerated(value = EnumType.STRING)
@@ -42,4 +51,9 @@ public class Customer extends TimeStamp {
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private NeedType needType;
+
+    @PrePersist
+    public void prepersist() {
+        profilePhoto = "https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png";
+    }
 }

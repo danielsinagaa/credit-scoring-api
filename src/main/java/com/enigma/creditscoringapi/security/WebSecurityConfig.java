@@ -59,6 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/users/**").hasAnyAuthority("SUPERVISOR", "MASTER")
                 .antMatchers("/customer/**").hasAnyAuthority("STAFF", "MASTER")
                 .antMatchers(HttpMethod.POST, "/transaction").hasAnyAuthority("STAFF", "MASTER")
                 .antMatchers("/transaction/**").hasAnyAuthority("SUPERVISOR", "MASTER")

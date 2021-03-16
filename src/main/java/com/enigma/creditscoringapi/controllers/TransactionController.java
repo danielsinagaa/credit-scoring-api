@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RequestMapping("/transaction")
 @RestController
 public class TransactionController {
@@ -34,15 +35,15 @@ public class TransactionController {
     private CustomerService customerService;
 
     @PostMapping
-    public ResponseMessage add(@RequestBody TransactionRequest request){
-        Transaction entity = modelMapper.map(request,Transaction.class);
+    public ResponseMessage add(@RequestBody TransactionRequest request) {
+        Transaction entity = modelMapper.map(request, Transaction.class);
 
         Customer customer = customerService.findById(request.getCustomer());
         Double income = request.getIncome().doubleValue();
 
         entity.setCustomer(customer);
 
-        switch (customer.getEmployeeType()){
+        switch (customer.getEmployeeType()) {
             case CONTRACT:
             case NON:
                 income /= 2;
@@ -59,7 +60,7 @@ public class TransactionController {
 
         Double interestRate = Double.valueOf(request.getInterestRate());
 
-        Double interest = (loan * interestRate)/100;
+        Double interest = (loan * interestRate) / 100;
 
         entity.setInterest(interest);
 
@@ -71,7 +72,7 @@ public class TransactionController {
 
         entity.setInstallmentTotal(installmentTotal);
 
-        Double creditRatio = ((installment + request.getOutcome())/ income) * 100;
+        Double creditRatio = ((installment + request.getOutcome()) / income) * 100;
 
         entity.setCreditRatio(creditRatio);
 
@@ -79,7 +80,7 @@ public class TransactionController {
 
         entity.setFinanceCriteria(financeCriteria);
 
-        switch (customer.getEmployeeType()){
+        switch (customer.getEmployeeType()) {
             case CONTRACT:
                 ContractResponse response = modelMapper.map(customer, ContractResponse.class);
                 LocalDate date = LocalDate.now().plusMonths(request.getTenor());
@@ -101,7 +102,7 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseMessage findById(@PathVariable String id){
+    public ResponseMessage findById(@PathVariable String id) {
         Transaction entity = service.findById(id);
         if (entity == null) {
             throw new EntityNotFoundException();
@@ -112,7 +113,7 @@ public class TransactionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseMessage deleteById(@PathVariable String id){
+    public ResponseMessage deleteById(@PathVariable String id) {
         Transaction entity = service.findById(id);
 
         if (entity == null) {
@@ -127,7 +128,7 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseMessage findAll(PageSearch search){
+    public ResponseMessage findAll(PageSearch search) {
         Page<Transaction> entityPage = service.findAll(new Transaction(), search.getPage(), search.getSize(), search.getSort());
 
         List<Transaction> entities = entityPage.toList();

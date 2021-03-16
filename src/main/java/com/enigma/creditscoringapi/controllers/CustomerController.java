@@ -4,7 +4,6 @@ import com.enigma.creditscoringapi.entity.ContractEmployee;
 import com.enigma.creditscoringapi.entity.Customer;
 import com.enigma.creditscoringapi.entity.NonEmployee;
 import com.enigma.creditscoringapi.entity.RegularEmployee;
-import com.enigma.creditscoringapi.entity.enums.EmployeeType;
 import com.enigma.creditscoringapi.exceptions.BadRequestException;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.ContractResponse;
@@ -22,11 +21,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RequestMapping("/customer")
 @RestController
 public class CustomerController {
@@ -37,7 +38,7 @@ public class CustomerController {
     private ModelMapper modelMapper;
 
     @PostMapping
-    public ResponseMessage add(@RequestBody CustomerRequest request){
+    public ResponseMessage add(@RequestBody CustomerRequest request, Principal principal) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String activeId = auth.getName();
 
@@ -46,7 +47,7 @@ public class CustomerController {
         Customer entity;
         CustomerResponse response;
 
-        switch (request.getEmployeeType()){
+        switch (request.getEmployeeType()) {
             case REGULAR:
                 entity = modelMapper.map(request, RegularEmployee.class);
                 response = modelMapper.map(entity, CustomerResponse.class);
@@ -67,6 +68,8 @@ public class CustomerController {
                 throw new BadRequestException();
         }
 
+        entity.setSubmitter(principal.getName());
+
         service.save(entity);
 
         response.setId(entity.getId());
@@ -75,7 +78,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseMessage deleteById(@PathVariable String id){
+    public ResponseMessage deleteById(@PathVariable String id) {
         Customer entity = service.removeById(id);
 
         if (entity == null) {
@@ -87,7 +90,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseMessage findById(@PathVariable String id){
+    public ResponseMessage findById(@PathVariable String id) {
         Customer entity = service.findById(id);
         if (entity == null) {
             throw new EntityNotFoundException();
@@ -95,7 +98,7 @@ public class CustomerController {
 
         CustomerResponse response;
 
-        switch (entity.getEmployeeType()){
+        switch (entity.getEmployeeType()) {
             case CONTRACT:
                 response = modelMapper.map(entity, ContractResponse.class);
                 break;
@@ -111,14 +114,14 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseMessage findAll(PageSearch search){
+    public ResponseMessage findAll(PageSearch search) {
         Page<Customer> entityPage = service.findAll(new Customer(), search.getPage(), search.getSize(), search.getSort());
 
         return getResponseMessage(entityPage);
     }
 
     @GetMapping("/non")
-    public ResponseMessage non(PageSearch search){
+    public ResponseMessage non(PageSearch search) {
         Page<Customer> entityPage = service.findAllNon(search.getPage(), search.getSize(), search.getSort());
 
         return getResponseMessage(entityPage);
@@ -143,7 +146,7 @@ public class CustomerController {
 
 
     @GetMapping("/regular")
-    public ResponseMessage regular(PageSearch search){
+    public ResponseMessage regular(PageSearch search) {
         Page<Customer> entityPage = service.findAllRegular(search.getPage(), search.getSize(), search.getSort());
 
         return getResponseMessage(entityPage);

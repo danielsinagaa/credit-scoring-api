@@ -12,6 +12,12 @@ public class CustomerResponse {
 
     private Long idNumber;
 
+    private String idPhoto;
+
+    private String submitter;
+
+    private String profilePhoto;
+
     private String email;
 
     private String address;

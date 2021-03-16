@@ -6,7 +6,6 @@ import com.enigma.creditscoringapi.entity.TransactionReport;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.ApprovalRequest;
 import com.enigma.creditscoringapi.models.ApprovalResponse;
-import com.enigma.creditscoringapi.models.TransactionResponse;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
@@ -22,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RequestMapping("/approval")
 @RestController
 public class ApprovalController {
@@ -38,7 +38,7 @@ public class ApprovalController {
     ReportService reportService;
 
     @PostMapping
-    public ResponseMessage add(@RequestBody ApprovalRequest request){
+    public ResponseMessage add(@RequestBody ApprovalRequest request) {
         Transaction transaction = transactionService.findById(request.getTransaction());
 
         Approval entity = new Approval(transaction, request.getApprove());
@@ -60,8 +60,9 @@ public class ApprovalController {
 
         return ResponseMessage.success(response);
     }
+
     @GetMapping("/{id}")
-    public ResponseMessage findById(@PathVariable String id){
+    public ResponseMessage findById(@PathVariable String id) {
         Approval entity = service.findById(id);
         if (entity == null) {
             throw new EntityNotFoundException();
@@ -72,7 +73,7 @@ public class ApprovalController {
     }
 
     @GetMapping
-    public ResponseMessage findAll(PageSearch search){
+    public ResponseMessage findAll(PageSearch search) {
         Page<Approval> entityPage = service.findAll(new Approval(), search.getPage(), search.getSize(), search.getSort());
 
         List<Approval> entities = entityPage.toList();
