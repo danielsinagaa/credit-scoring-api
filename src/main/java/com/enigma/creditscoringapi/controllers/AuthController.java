@@ -89,6 +89,8 @@ public class AuthController {
         }
 
         Users user = modelMapper.map(request, Users.class);
+        user.setPassword(encoder.encode(request.getPassword()));
+        user.setIsVerified(false);
 
         Set<String> strRoles = request.getRole();
         Set<Role> roles = new HashSet<>();
@@ -96,9 +98,12 @@ public class AuthController {
         if (strRoles == null) {
             Role staff = service.findRoleByName(ERole.STAFF);
             roles.add(staff);
-        } else {
-            Role supervisor = service.findRoleByName(ERole.SUPERVISOR);
+        } else if (strRoles.contains("MASTER")){
+            Role supervisor = service.findRoleByName(ERole.MASTER);
             roles.add(supervisor);
+        } else {
+            Role master = service.findRoleByName(ERole.SUPERVISOR);
+            roles.add(master);
         }
 
         user.setRoles(roles);
