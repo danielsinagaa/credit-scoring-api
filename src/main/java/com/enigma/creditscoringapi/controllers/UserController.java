@@ -2,13 +2,17 @@ package com.enigma.creditscoringapi.controllers;
 
 import com.enigma.creditscoringapi.entity.Users;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
+import com.enigma.creditscoringapi.models.pages.Active;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
+import com.enigma.creditscoringapi.services.SendEmailService;
 import com.enigma.creditscoringapi.services.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
 
 @CrossOrigin
 @RequestMapping("/users")
@@ -19,6 +23,9 @@ public class UserController {
 
     @Autowired
     UsersService service;
+
+    @Autowired
+    private SendEmailService sendEmailService;
 
     @DeleteMapping("/{id}")
     public ResponseMessage deleteUserById(@PathVariable String id) {
@@ -56,15 +63,20 @@ public class UserController {
         return ResponseMessage.success(users);
     }
 
-    @GetMapping("/activate/{id}")
-    public ResponseMessage ActiveUserById(@PathVariable String id) {
-        Users users = service.findById(id);
+    @PostMapping("/activate")
+    public ResponseMessage ActiveUserById(@RequestBody Active id) throws MessagingException {
+        Users users = service.findById(id.getId());
 
         if (users == null) {
             throw new EntityNotFoundException();
         }
 
+        if (users.getActive()) return new ResponseMessage(400, "Account has been already active", users);
+
         users.setActive(true);
+        service.save(users);
+
+        sendEmailService.sendEmailVerificationToken(users.getVerifiedToken(), users.getEmail());
 
         return ResponseMessage.success(users);
     }

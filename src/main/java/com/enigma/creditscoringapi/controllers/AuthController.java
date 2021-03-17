@@ -11,7 +11,6 @@ import com.enigma.creditscoringapi.repository.UsersRepository;
 import com.enigma.creditscoringapi.security.jwt.JwtUtils;
 import com.enigma.creditscoringapi.security.service.UserDetailsImpl;
 import com.enigma.creditscoringapi.services.RoleService;
-import com.enigma.creditscoringapi.services.SendEmailService;
 import com.enigma.creditscoringapi.services.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
@@ -54,9 +52,6 @@ public class AuthController {
 
     @Autowired
     PasswordEncoder encoder;
-
-    @Autowired
-    private SendEmailService sendEmailService;
 
     @PostMapping("/login")
     public ResponseMessage authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -104,13 +99,15 @@ public class AuthController {
         if (user == null) {
             return new ResponseMessage(400, "Verification token is not valid.", null);
         } else {
+            System.out.println(user.toString());
             user.setIsVerified(true);
+            usersService.save(user);
             return new ResponseMessage(200, "Verification token is success.", null);
         }
     }
 
     @PostMapping("/signup")
-    public ResponseMessage registerUser(@Valid @RequestBody SignUpRequest request) throws MessagingException {
+    public ResponseMessage registerUser(@Valid @RequestBody SignUpRequest request) {
 
         if (repository.existsByUsername(request.getUsername())) {
 
@@ -141,8 +138,6 @@ public class AuthController {
             Role master = service.findRoleByName(ERole.SUPERVISOR);
             roles.add(master);
         }
-
-        sendEmailService.sendEmailVerificationToken(token, request.getEmail());
 
         user.setRoles(roles);
         repository.save(user);
