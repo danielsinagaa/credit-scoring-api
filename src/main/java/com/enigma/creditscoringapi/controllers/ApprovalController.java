@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,10 +39,10 @@ public class ApprovalController {
     ReportService reportService;
 
     @PostMapping
-    public ResponseMessage add(@RequestBody ApprovalRequest request) {
+    public ResponseMessage add(@RequestBody ApprovalRequest request, Principal principal) {
         Transaction transaction = transactionService.findById(request.getTransaction());
 
-        Approval entity = new Approval(transaction, request.getApprove());
+        Approval entity = new Approval(transaction, request.getApprove(), principal.getName());
 
         service.save(entity);
 

@@ -30,4 +30,6 @@ public class TransactionResponse {
     private Double installment;
 
     private NeedType needType;
+
+    private String submitter;
 }

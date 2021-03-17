@@ -50,6 +50,9 @@ public class Transaction extends TimeStamp{
     private Integer interestRate;
 
     @Column(nullable = false)
+    private String submitter;
+
+    @Column(nullable = false)
     private Boolean financeCriteria;
 
     @Column(nullable = false)

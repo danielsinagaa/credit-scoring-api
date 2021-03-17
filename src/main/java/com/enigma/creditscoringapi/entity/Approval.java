@@ -21,11 +21,15 @@ public class Approval extends TimeStamp {
     @Column(nullable = false)
     private Boolean approve;
 
+    @Column(nullable = false)
+    private String submitter;
+
     public Approval() {
     }
 
-    public Approval(Transaction transaction, Boolean approve) {
+    public Approval(Transaction transaction, Boolean approve, String submitter) {
         this.transaction = transaction;
         this.approve = approve;
+        this.submitter = submitter;
     }
 }

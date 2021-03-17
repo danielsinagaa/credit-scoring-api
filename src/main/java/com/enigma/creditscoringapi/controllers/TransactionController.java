@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class TransactionController {
     private CustomerService customerService;
 
     @PostMapping
-    public ResponseMessage add(@RequestBody TransactionRequest request) {
+    public ResponseMessage add(@RequestBody TransactionRequest request, Principal principal) {
         Transaction entity = modelMapper.map(request, Transaction.class);
 
         Customer customer = customerService.findById(request.getCustomer());
@@ -94,6 +95,7 @@ public class TransactionController {
                 entity.setEmployeeCriteria(null);
         }
 
+        entity.setSubmitter(principal.getName());
         service.save(entity);
 
         TransactionResponse data = modelMapper.map(entity, TransactionResponse.class);

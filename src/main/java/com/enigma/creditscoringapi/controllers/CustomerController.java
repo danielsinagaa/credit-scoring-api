@@ -68,10 +68,9 @@ public class CustomerController {
                 throw new BadRequestException();
         }
 
-        entity.setSubmitter(principal.getName());
-
         service.save(entity);
 
+        entity.setSubmitter(principal.getName());
         response.setId(entity.getId());
 
         return ResponseMessage.success(response);
