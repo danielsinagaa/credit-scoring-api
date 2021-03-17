@@ -18,7 +18,7 @@ public class ResponseMessage<T> {
         this.timestamp = LocalDateTime.now();
     }
 
-    public ResponseMessage(){
+    public ResponseMessage() {
     }
 
     public int getCode() {
@@ -57,15 +57,15 @@ public class ResponseMessage<T> {
         return new ResponseMessage(HttpStatus.OK.value(), "success", data);
     }
 
-    public static ResponseMessage error (HttpStatus status) {
+    public static ResponseMessage error(HttpStatus status) {
         return error(status.value(), status.getReasonPhrase());
     }
 
-    public static ResponseMessage error(int code, String message ) {
+    public static ResponseMessage error(int code, String message) {
         return error(code, message, null);
     }
 
-    public static <T> ResponseMessage<T> error(int code, String message, T data ) {
-        return new ResponseMessage (code, message, data);
+    public static <T> ResponseMessage<T> error(int code, String message, T data) {
+        return new ResponseMessage(code, message, data);
     }
 }

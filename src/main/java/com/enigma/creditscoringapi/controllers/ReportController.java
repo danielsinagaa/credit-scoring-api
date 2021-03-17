@@ -26,7 +26,7 @@ public class ReportController {
     ReportService service;
 
     @GetMapping("/{id}")
-    public ResponseMessage findById(@PathVariable String id){
+    public ResponseMessage findById(@PathVariable String id) {
         TransactionReport entity = service.findById(id);
         if (entity == null) {
             throw new EntityNotFoundException();
@@ -37,7 +37,7 @@ public class ReportController {
     }
 
     @GetMapping
-    public ResponseMessage findAll(PageSearch search){
+    public ResponseMessage findAll(PageSearch search) {
         Page<TransactionReport> entityPage = service.findAll(new TransactionReport(), search.getPage(), search.getSize(), search.getSort());
 
         List<TransactionReport> entities = entityPage.toList();

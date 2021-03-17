@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Data
 public class Role {
     @Id
-    @GenericGenerator(name = "id_role",strategy = "uuid2")
-    @GeneratedValue(generator = "id_role",strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "id_role", strategy = "uuid2")
+    @GeneratedValue(generator = "id_role", strategy = GenerationType.IDENTITY)
     private String id;
 
     @Enumerated(EnumType.STRING)
@@ -23,7 +23,7 @@ public class Role {
     }
 
     public Role(ERole name) {
-        this.name=name;
+        this.name = name;
     }
 
 }

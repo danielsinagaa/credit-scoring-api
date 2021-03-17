@@ -16,6 +16,4 @@ public class JwtResponse {
         this.roles = roles;
     }
 
-    public JwtResponse() {
-    }
 }

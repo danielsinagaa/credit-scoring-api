@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table
 @Data
-public class Approval extends TimeStamp{
+public class Approval extends TimeStamp {
     @GeneratedValue(generator = "approval_id", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "approval_id", strategy = "uuid")
     @Id

@@ -21,14 +21,14 @@ public class UserController {
     UsersService service;
 
     @DeleteMapping("/{id}")
-    public ResponseMessage deleteUserById(@PathVariable String id){
+    public ResponseMessage deleteUserById(@PathVariable String id) {
         Users users = service.findById(id);
 
         if (users == null) {
-            throw  new EntityNotFoundException();
+            throw new EntityNotFoundException();
         }
 
-        if (!users.getIsVerified() || !users.getActive()){
+        if (!users.getIsVerified() || !users.getActive()) {
             return new ResponseMessage(400, "Account hasnt been actived yet", null);
         }
 
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseMessage findAll(PageSearch search){
+    public ResponseMessage findAll(PageSearch search) {
 
         Page<Users> users = service.findAll(new Users(), search.getPage(), search.getSize(), search.getSort());
 
@@ -46,22 +46,22 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseMessage findUserById(@PathVariable String id){
+    public ResponseMessage findUserById(@PathVariable String id) {
         Users users = service.findById(id);
 
         if (users == null) {
-            throw  new EntityNotFoundException();
+            throw new EntityNotFoundException();
         }
 
         return ResponseMessage.success(users);
     }
 
     @GetMapping("/activate/{id}")
-    public ResponseMessage ActiveUserById(@PathVariable String id){
+    public ResponseMessage ActiveUserById(@PathVariable String id) {
         Users users = service.findById(id);
 
         if (users == null) {
-            throw  new EntityNotFoundException();
+            throw new EntityNotFoundException();
         }
 
         users.setActive(true);

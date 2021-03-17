@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table
 @Data
 @NamedQuery(name = "Customer.findAllContract",
-    query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT")
+        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT")
 @NamedQuery(name = "Customer.findAllNon",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.NON")
 @NamedQuery(name = "Customer.findAllRegular",

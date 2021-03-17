@@ -1,6 +1,5 @@
 package com.enigma.creditscoringapi.security.service;
 
-import com.enigma.creditscoringapi.entity.Role;
 import com.enigma.creditscoringapi.entity.Users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;

@@ -62,9 +62,9 @@ public class AuthController {
     public ResponseMessage authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Users user = repository.getByUsername(loginRequest.getUsername());
-        if (user == null){
+        if (user == null) {
             user = repository.getByEmail(loginRequest.getUsername());
-            if (user == null){
+            if (user == null) {
                 return new ResponseMessage(403, "no username or email found", null);
             }
         }
@@ -73,12 +73,12 @@ public class AuthController {
             return new ResponseMessage(403, "account has not been verified yet", null);
         }
 
-        if (encoder.matches(user.getPassword(), loginRequest.getPassword())){
+        if (encoder.matches(user.getPassword(), loginRequest.getPassword())) {
             return new ResponseMessage(403, "your password is wrong", null);
         }
 
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);

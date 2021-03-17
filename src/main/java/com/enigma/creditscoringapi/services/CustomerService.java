@@ -1,7 +1,6 @@
 package com.enigma.creditscoringapi.services;
 
 import com.enigma.creditscoringapi.entity.Customer;
-import com.enigma.creditscoringapi.entity.enums.EmployeeType;
 import com.enigma.creditscoringapi.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
