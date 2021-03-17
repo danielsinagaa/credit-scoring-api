@@ -23,6 +23,4 @@ public class CustomerResponse {
     private String address;
 
     private EmployeeType employeeType;
-
-    private NeedType needType;
 }

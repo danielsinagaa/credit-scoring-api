@@ -1,7 +1,6 @@
 package com.enigma.creditscoringapi.entity;
 
 import com.enigma.creditscoringapi.entity.enums.EmployeeType;
-import com.enigma.creditscoringapi.entity.enums.NeedType;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -47,10 +46,6 @@ public class Customer extends TimeStamp {
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private EmployeeType employeeType;
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
-    private NeedType needType;
 
     @PrePersist
     public void prepersist() {

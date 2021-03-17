@@ -1,5 +1,6 @@
 package com.enigma.creditscoringapi.entity;
 
+import com.enigma.creditscoringapi.entity.enums.NeedType;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -53,6 +54,10 @@ public class Transaction extends TimeStamp{
 
     @Column(nullable = false)
     private String notes;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    private NeedType needType;
 
     @Column
     private Boolean employeeCriteria;
