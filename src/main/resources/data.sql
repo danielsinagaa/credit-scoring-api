@@ -13,7 +13,7 @@
 --         SELECT users.username FROM users WHERE username = 'masteradmin'
 --     ) LIMIT 1;
 
-INSERT IGNORE users (id, email, is_verified, password, username, date_register, active, full_name, profile_picture, verified_token)
+INSERT IGNORE users (id, email, is_verified, password, username, date_register, active, full_name, profile_picture, verified_token, is_deleted, created_date)
 VALUES ( 'f906a295847742309a4de4101dea0c55',
         'solehsolihin2021@gmail.com',
         true,
@@ -23,7 +23,9 @@ VALUES ( 'f906a295847742309a4de4101dea0c55',
         true,
         'natasha romanov',
         'https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png',
-        'potatolalalala');
+        'potatolalalala',
+        false,
+        current_date );
 
 INSERT INTO role (id, name)
 SELECT * FROM (SELECT 'c30f9a16859611eb8dcd0242ac130003',

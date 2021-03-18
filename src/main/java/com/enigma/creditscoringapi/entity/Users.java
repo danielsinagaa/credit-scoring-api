@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table
 @Data
-public class Users {
+public class Users extends TimeStamp{
     @Id
     @GenericGenerator(name = "id_users", strategy = "uuid2")
     @GeneratedValue(generator = "id_users", strategy = GenerationType.IDENTITY)

@@ -20,6 +20,16 @@ public class CustomerService extends AbstractService<Customer, String> {
     @Autowired
     CustomerRepository repository;
 
+    public void softDelete(String id){
+        repository.softDelete(id);
+    }
+
+    public Page<Customer> findAllByAdmin(String username, int page, int size, Sort.Direction direction){
+        Sort sort = Sort.Direction.DESC.equals(direction) ?
+                Sort.by(direction, "name") : Sort.by("name");
+        return repository.findAllBySubmitter(username, PageRequest.of(page, size, sort));
+    }
+
     public Page<Customer> findAllContract(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
                 Sort.by(direction, "name") : Sort.by("name");

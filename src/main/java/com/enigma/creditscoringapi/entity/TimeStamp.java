@@ -1,5 +1,8 @@
 package com.enigma.creditscoringapi.entity;
 
+import lombok.Data;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
@@ -7,6 +10,8 @@ import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@Data
+@Where(clause="is_deleted = 0")
 public class TimeStamp {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
@@ -14,25 +19,13 @@ public class TimeStamp {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(LocalDateTime modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @PrePersist
     public void prePersist() {
         createdDate = LocalDateTime.now();
+        isDeleted = false;
     }
 
     @PreUpdate

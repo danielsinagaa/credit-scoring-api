@@ -5,11 +5,11 @@ import com.enigma.creditscoringapi.entity.Transaction;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.ContractResponse;
 import com.enigma.creditscoringapi.models.TransactionRequest;
+import com.enigma.creditscoringapi.models.TransactionResponse;
 import com.enigma.creditscoringapi.models.TransactionResponseExt;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
-import com.enigma.creditscoringapi.models.TransactionResponse;
 import com.enigma.creditscoringapi.services.CustomerService;
 import com.enigma.creditscoringapi.services.TransactionService;
 import org.modelmapper.ModelMapper;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class TransactionController {
 
     @Autowired
     private CustomerService customerService;
+
+    private final DecimalFormat df = new DecimalFormat("#.##");
 
     @PostMapping
     public ResponseMessage add(@RequestBody TransactionRequest request, Principal principal) {
@@ -57,25 +60,25 @@ public class TransactionController {
 
         Double mainLoan = request.getLoan().doubleValue() / request.getTenor();
 
-        entity.setMainLoan(mainLoan);
+        entity.setMainLoan(Double.valueOf(df.format(mainLoan)));
 
         Double interestRate = Double.valueOf(request.getInterestRate());
 
         Double interest = (loan * interestRate) / 100;
 
-        entity.setInterest(interest);
+        entity.setInterest(Double.valueOf(df.format(interest)));
 
         Double installment = mainLoan + interest;
 
-        entity.setInstallment(installment);
+        entity.setInstallment(Double.valueOf(df.format(installment)));
 
         Double installmentTotal = installment * request.getTenor();
 
-        entity.setInstallmentTotal(installmentTotal);
+        entity.setInstallmentTotal(Double.valueOf(df.format(installmentTotal)));
 
         Double creditRatio = ((installment + request.getOutcome()) / income) * 100;
 
-        entity.setCreditRatio(creditRatio);
+        entity.setCreditRatio(Double.valueOf(df.format(creditRatio)));
 
         Boolean financeCriteria = creditRatio < 30.0;
 

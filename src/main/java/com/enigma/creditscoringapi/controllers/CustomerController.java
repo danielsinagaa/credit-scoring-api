@@ -16,8 +16,6 @@ import com.enigma.creditscoringapi.services.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,8 +37,6 @@ public class CustomerController {
 
     @PostMapping
     public ResponseMessage add(@RequestBody CustomerRequest request, Principal principal) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String activeId = auth.getName();
 
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
@@ -50,6 +46,7 @@ public class CustomerController {
         switch (request.getEmployeeType()) {
             case REGULAR:
                 entity = modelMapper.map(request, RegularEmployee.class);
+                entity.setSubmitter(principal.getName());
                 response = modelMapper.map(entity, CustomerResponse.class);
                 break;
             case CONTRACT:
@@ -58,10 +55,12 @@ public class CustomerController {
                 contract.setContractStart(date);
                 contract.setContractEnd(date.plusMonths(request.getContractLength()));
                 entity = contract;
+                entity.setSubmitter(principal.getName());
                 response = modelMapper.map(entity, ContractResponse.class);
                 break;
             case NON:
                 entity = modelMapper.map(request, NonEmployee.class);
+                entity.setSubmitter(principal.getName());
                 response = modelMapper.map(entity, CustomerResponse.class);
                 break;
             default:
@@ -70,19 +69,34 @@ public class CustomerController {
 
         service.save(entity);
 
-        entity.setSubmitter(principal.getName());
         response.setId(entity.getId());
 
         return ResponseMessage.success(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseMessage deleteById(@PathVariable String id) {
-        Customer entity = service.removeById(id);
+    @PatchMapping("/{id}")
+    public ResponseMessage add(@PathVariable String id, @RequestBody CustomerRequest request) {
+        Customer entity = service.findById(id);
 
         if (entity == null) {
             throw new EntityNotFoundException();
         }
+        modelMapper.map(request, entity);
+        service.save(entity);
+
+        CustomerResponse response = modelMapper.map(entity, CustomerResponse.class);
+        return ResponseMessage.success(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseMessage deleteById(@PathVariable String id) {
+        Customer entity = service.findById(id);
+
+        if (entity == null) {
+            throw new EntityNotFoundException();
+        }
+
+        service.softDelete(id);
 
         CustomerResponse response = modelMapper.map(entity, CustomerResponse.class);
         return ResponseMessage.success(response);
@@ -143,6 +157,22 @@ public class CustomerController {
         return ResponseMessage.success(data);
     }
 
+    @GetMapping("/admin")
+    public ResponseMessage findAlltype(@Valid PageSearch request, Principal principal) {
+        Page<Customer> entityPage = service.findAllByAdmin(principal.getName(), request.getPage(),
+                request.getSize(), request.getSort());
+        List<Customer> entities = entityPage.toList();
+
+        List<CustomerResponse> models = entities.stream()
+                .map(e -> modelMapper.map(e, CustomerResponse.class))
+                .collect(Collectors.toList());
+
+        PagedList<CustomerResponse> data = new PagedList(models,
+                entityPage.getNumber(), entityPage.getSize(),
+                entityPage.getTotalElements());
+
+        return ResponseMessage.success(data);
+    }
 
     @GetMapping("/regular")
     public ResponseMessage regular(PageSearch search) {

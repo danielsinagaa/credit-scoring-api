@@ -73,7 +73,7 @@ public class AuthController {
         }
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(user.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -132,11 +132,11 @@ public class AuthController {
             Role staff = service.findRoleByName(ERole.STAFF);
             roles.add(staff);
         } else if (strRoles.contains("MASTER")) {
-            Role supervisor = service.findRoleByName(ERole.MASTER);
-            roles.add(supervisor);
-        } else {
-            Role master = service.findRoleByName(ERole.SUPERVISOR);
+            Role master = service.findRoleByName(ERole.MASTER);
             roles.add(master);
+        } else {
+            Role supervisor = service.findRoleByName(ERole.SUPERVISOR);
+            roles.add(supervisor);
         }
 
         user.setRoles(roles);
@@ -156,5 +156,25 @@ public class AuthController {
         }
 
         return stringBuilder.toString();
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseMessage existUsername(@PathVariable String username){
+
+        if (usersService.existByUsername(username)){
+            return new ResponseMessage(400, "username exist", false);
+        }
+
+        return ResponseMessage.success(true);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseMessage existEmail(@PathVariable String email){
+
+        if (usersService.existByEmail(email)){
+            return new ResponseMessage(400, "email exist", false);
+        }
+
+        return ResponseMessage.success(true);
     }
 }
