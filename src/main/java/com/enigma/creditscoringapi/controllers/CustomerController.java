@@ -75,7 +75,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseMessage add(@PathVariable String id, @RequestBody CustomerRequest request) {
+    public ResponseMessage edit(@PathVariable String id, @RequestBody CustomerRequest request) {
         Customer entity = service.findById(id);
 
         if (entity == null) {

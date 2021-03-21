@@ -3,6 +3,7 @@ package com.enigma.creditscoringapi.controllers;
 import com.enigma.creditscoringapi.entity.Role;
 import com.enigma.creditscoringapi.entity.Users;
 import com.enigma.creditscoringapi.entity.enums.ERole;
+import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.JwtResponse;
 import com.enigma.creditscoringapi.models.LoginRequest;
 import com.enigma.creditscoringapi.models.SignUpRequest;
@@ -11,6 +12,7 @@ import com.enigma.creditscoringapi.repository.UsersRepository;
 import com.enigma.creditscoringapi.security.jwt.JwtUtils;
 import com.enigma.creditscoringapi.security.service.UserDetailsImpl;
 import com.enigma.creditscoringapi.services.RoleService;
+import com.enigma.creditscoringapi.services.SendEmailService;
 import com.enigma.creditscoringapi.services.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -52,6 +52,9 @@ public class AuthController {
 
     @Autowired
     PasswordEncoder encoder;
+
+    @Autowired
+    private SendEmailService sendEmailService;
 
     @PostMapping("/login")
     public ResponseMessage authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -87,9 +90,29 @@ public class AuthController {
                 jwt,
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles.get(0));
+                roles.get(0),
+                user.getFullName());
 
         return ResponseMessage.success(response);
+    }
+
+    @PostMapping("/forgot")
+    public ResponseMessage forgotPassword(@Valid @RequestBody SignUpRequest request) throws MessagingException {
+        Users users = repository.getByEmail(request.getEmail());
+
+        if (users == null){
+            throw new EntityNotFoundException();
+        }
+
+        String newPassword = randomPassword();
+
+        users.setPassword(encoder.encode(newPassword));
+
+        usersService.save(users);
+
+        sendEmailService.forgotPassword(users.getUsername(), newPassword, users.getEmail());
+
+        return new ResponseMessage(200, "success", "verification email has been sent");
     }
 
     @GetMapping("/verification/{token}")
@@ -111,11 +134,11 @@ public class AuthController {
 
         if (repository.existsByUsername(request.getUsername())) {
 
-            return new ResponseMessage(409, "not allowed", "ERROR: username is already use");
+            return new ResponseMessage(409, "not allowed", " username is already use");
         }
 
         if (repository.existsByEmail(request.getEmail())) {
-            return new ResponseMessage(409, "not allowed", "ERROR: email is already use");
+            return new ResponseMessage(409, "not allowed", " email is already use");
         }
 
         String token = generateVerificationToken();
@@ -125,8 +148,12 @@ public class AuthController {
         user.setIsVerified(false);
         user.setVerifiedToken(token);
 
+        if (request.getProfilePicture().isEmpty() || request.getProfilePicture().isBlank() || request.getProfilePicture() == null){
+            user.setProfilePicture("https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png");
+        }
+
         String strRoles = request.getRole();
-        Set<Role> roles = new HashSet<>();
+        List<Role> roles = new ArrayList<>();
 
         if (strRoles == null) {
             Role staff = service.findRoleByName(ERole.STAFF);
@@ -176,5 +203,20 @@ public class AuthController {
         }
 
         return ResponseMessage.success(true);
+    }
+
+    private String randomPassword() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+
+        while (salt.length() < 10) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+
+        String saltStr = salt.toString();
+        return saltStr;
     }
 }

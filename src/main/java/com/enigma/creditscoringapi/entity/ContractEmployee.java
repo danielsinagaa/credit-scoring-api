@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Table
 @Data
+@Where(clause="is_deleted = 0")
 public class ContractEmployee extends Customer {
     @GeneratedValue(generator = "contract_employee_id", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "contract_employee_id", strategy = "uuid")

@@ -2,12 +2,14 @@ package com.enigma.creditscoringapi.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
 @Table
 @Data
+@Where(clause="is_deleted = 0")
 public class Approval extends TimeStamp {
     @GeneratedValue(generator = "approval_id", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "approval_id", strategy = "uuid")

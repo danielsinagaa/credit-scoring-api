@@ -4,6 +4,7 @@ import com.enigma.creditscoringapi.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ public interface UsersRepository extends JpaRepository<Users, String> {
     @Query(nativeQuery = true, value = "SELECT * FROM users WHERE email = :email")
     Users getByEmail(String email);
 
+    @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE users u SET u.is_deleted = true WHERE u.id = ?1")
     void softDelete(String id);

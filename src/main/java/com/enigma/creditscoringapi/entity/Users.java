@@ -2,18 +2,20 @@ package com.enigma.creditscoringapi.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table
 @Data
+@Where(clause="is_deleted = 0")
 public class Users extends TimeStamp{
     @Id
     @GenericGenerator(name = "id_users", strategy = "uuid2")
@@ -47,13 +49,13 @@ public class Users extends TimeStamp{
     @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(nullable = false)
     private String profilePicture;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
     @Column
     private LocalDate dateRegister;
@@ -62,7 +64,6 @@ public class Users extends TimeStamp{
     public void prepersist() {
         dateRegister = LocalDate.now();
         isVerified = false;
-        profilePicture = "https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png";
         active = false;
     }
 

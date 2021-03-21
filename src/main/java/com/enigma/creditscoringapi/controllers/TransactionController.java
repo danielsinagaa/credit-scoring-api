@@ -3,10 +3,7 @@ package com.enigma.creditscoringapi.controllers;
 import com.enigma.creditscoringapi.entity.Customer;
 import com.enigma.creditscoringapi.entity.Transaction;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
-import com.enigma.creditscoringapi.models.ContractResponse;
-import com.enigma.creditscoringapi.models.TransactionRequest;
-import com.enigma.creditscoringapi.models.TransactionResponse;
-import com.enigma.creditscoringapi.models.TransactionResponseExt;
+import com.enigma.creditscoringapi.models.*;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
@@ -147,4 +144,39 @@ public class TransactionController {
 
         return ResponseMessage.success(response);
     }
+
+    @GetMapping("/type/non")
+    public ResponseMessage findAllNon(PageSearch search){
+        Page<Transaction> entityPage = service.findAllNon(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/type/contract")
+    public ResponseMessage findAllContract(PageSearch search){
+        Page<Transaction> entityPage = service.findAllContract(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/type/regular")
+    public ResponseMessage findAllRegular(PageSearch search){
+        Page<Transaction> entityPage = service.findAllRegular(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    private ResponseMessage getResponseMessage(Page<Transaction> entityPage) {
+        List<Transaction> entities = entityPage.toList();
+
+        List<ReportResponse> responses = entities.stream()
+                .map(e -> modelMapper.map(e, ReportResponse.class))
+                .collect(Collectors.toList());
+
+        PagedList<ReportResponse> response = new PagedList(responses, entityPage.getNumber(),
+                entityPage.getSize(), entityPage.getTotalElements());
+
+        return ResponseMessage.success(response);
+    }
+
 }

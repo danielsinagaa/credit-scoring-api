@@ -45,6 +45,10 @@ public class UserController {
             throw new EntityNotFoundException();
         }
 
+        users.setEmail(users.getEmail()+"DELETED");
+        users.setUsername(users.getUsername()+"DELETED");
+        service.save(users);
+
         UserResponse response = modelMapper.map(users, UserResponse.class);
 
         service.softDelete(id);
@@ -119,6 +123,10 @@ public class UserController {
                 .map(e -> modelMapper.map(e, UserResponse.class))
                 .collect(Collectors.toList());
 
+        for (UserResponse u : responses){
+            u.setRole(u.getRoles().get(0).getName().name());
+        }
+
         PagedList<ReportResponse> response = new PagedList(responses, users.getNumber(),
                 users.getSize(), users.getTotalElements());
 
@@ -134,6 +142,7 @@ public class UserController {
         }
 
         UserResponse response = modelMapper.map(users, UserResponse.class);
+        response.setRole(response.getRoles().get(0).getName().name());
 
         return ResponseMessage.success(response);
     }

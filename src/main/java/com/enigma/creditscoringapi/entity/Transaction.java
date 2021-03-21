@@ -3,12 +3,26 @@ package com.enigma.creditscoringapi.entity;
 import com.enigma.creditscoringapi.entity.enums.NeedType;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
 @Table
 @Data
+@Where(clause="is_deleted = 0")
+@NamedQuery(name = "Transaction.findAllContract",
+        query = "SELECT t FROM Transaction t\n" +
+                "JOIN Customer c ON (c.id = t.customer)\n" +
+                "WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT")
+@NamedQuery(name = "Transaction.findAllNon",
+        query = "SELECT t FROM Transaction t\n" +
+                "JOIN Customer c ON (c.id = t.customer)\n" +
+                "WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.NON")
+@NamedQuery(name = "Transaction.findAllRegular",
+        query = "SELECT t FROM Transaction t\n" +
+                "JOIN Customer c ON (c.id = t.customer)\n" +
+                "WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR")
 public class Transaction extends TimeStamp{
     @GeneratedValue(generator = "transaction_id", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "transaction_id", strategy = "uuid")
@@ -26,22 +40,22 @@ public class Transaction extends TimeStamp{
     private Integer outcome;
 
     @Column(nullable = false)
-    private Integer loan;//pinjaman
+    private Integer loan;
 
     @Column(nullable = false)
     private Integer tenor;
 
     @Column(nullable = false)
-    private Double mainLoan;//pokok
+    private Double mainLoan;
 
     @Column(nullable = false)
-    private Double interest;//bunga
+    private Double interest;
 
     @Column(nullable = false)
     private Double creditRatio;
 
     @Column(nullable = false)
-    private Double installment;//angsuran
+    private Double installment;
 
     @Column(nullable = false)
     private Double installmentTotal;

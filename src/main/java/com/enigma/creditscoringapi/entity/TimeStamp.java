@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Data
-@Where(clause="is_deleted = 0")
 public class TimeStamp {
     @Column(name = "created_date")
     private LocalDateTime createdDate;

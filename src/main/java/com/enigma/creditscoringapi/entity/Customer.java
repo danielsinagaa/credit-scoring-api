@@ -3,12 +3,14 @@ package com.enigma.creditscoringapi.entity;
 import com.enigma.creditscoringapi.entity.enums.EmployeeType;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
 @Table
 @Data
+@Where(clause="is_deleted = 0")
 @NamedQuery(name = "Customer.findAllContract",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT")
 @NamedQuery(name = "Customer.findAllNon",
@@ -40,7 +42,7 @@ public class Customer extends TimeStamp {
     @Column(nullable = false)
     private String submitter;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long idNumber;
 
     @Enumerated(value = EnumType.STRING)
@@ -49,6 +51,8 @@ public class Customer extends TimeStamp {
 
     @PrePersist
     public void prepersist() {
-        profilePhoto = "https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png";
+        if (profilePhoto == null) {
+            profilePhoto = "https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png";
+        }
     }
 }

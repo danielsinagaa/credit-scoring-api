@@ -1,11 +1,11 @@
 package com.enigma.creditscoringapi.models;
 
 import com.enigma.creditscoringapi.entity.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class UserResponse {
@@ -23,7 +23,10 @@ public class UserResponse {
 
     private String profilePicture;
 
-    private Set<Role> roles = new HashSet<>();
+    @JsonIgnore
+    private List<Role> roles;
+
+    private String role;
 
     private LocalDate dateRegister;
 

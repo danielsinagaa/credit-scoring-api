@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,38 @@ public class ReportController {
     public ResponseMessage findAll(PageSearch search) {
         Page<TransactionReport> entityPage = service.findAll(new TransactionReport(), search.getPage(), search.getSize(), search.getSort());
 
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/type/non")
+    public ResponseMessage findAllNon(PageSearch search){
+        Page<TransactionReport> entityPage = service.findAllNon(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/users")
+    public ResponseMessage findAllBySubmitter(PageSearch search, Principal principal){
+        Page<TransactionReport> entityPage = service.findAllBySubmitter(principal.getName(),search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/type/contract")
+    public ResponseMessage findAllContract(PageSearch search){
+        Page<TransactionReport> entityPage = service.findAllContract(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/type/regular")
+    public ResponseMessage findAllRegular(PageSearch search){
+        Page<TransactionReport> entityPage = service.findAllRegular(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    private ResponseMessage getResponseMessage(Page<TransactionReport> entityPage) {
         List<TransactionReport> entities = entityPage.toList();
 
         List<ReportResponse> responses = entities.stream()
