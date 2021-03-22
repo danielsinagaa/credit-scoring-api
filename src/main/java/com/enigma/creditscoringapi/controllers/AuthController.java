@@ -122,7 +122,6 @@ public class AuthController {
         if (user == null) {
             return new ResponseMessage(400, "Verification token is not valid.", null);
         } else {
-            System.out.println(user.toString());
             user.setIsVerified(true);
             usersService.save(user);
             return new ResponseMessage(200, "Verification token is success.", null);

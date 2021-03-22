@@ -140,6 +140,13 @@ public class CustomerController {
         return getResponseMessage(entityPage);
     }
 
+    @GetMapping("/regular")
+    public ResponseMessage regular(PageSearch search) {
+        Page<Customer> entityPage = service.findAllRegular(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
     @GetMapping("/contract")
     public ResponseMessage findAlltype(@Valid PageSearch request) {
         Page<Customer> entityPage = service.findAllContract(request.getPage(),
@@ -172,13 +179,6 @@ public class CustomerController {
                 entityPage.getTotalElements());
 
         return ResponseMessage.success(data);
-    }
-
-    @GetMapping("/regular")
-    public ResponseMessage regular(PageSearch search) {
-        Page<Customer> entityPage = service.findAllRegular(search.getPage(), search.getSize(), search.getSort());
-
-        return getResponseMessage(entityPage);
     }
 
     private ResponseMessage getResponseMessage(Page<Customer> entityPage) {
