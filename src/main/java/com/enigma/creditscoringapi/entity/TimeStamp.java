@@ -1,7 +1,7 @@
 package com.enigma.creditscoringapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -12,12 +12,15 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Data
 public class TimeStamp {
+    @JsonIgnore
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
+    @JsonIgnore
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
+    @JsonIgnore
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 

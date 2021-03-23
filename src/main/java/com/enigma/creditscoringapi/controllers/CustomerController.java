@@ -164,10 +164,11 @@ public class CustomerController {
         return ResponseMessage.success(data);
     }
 
-    @GetMapping("/admin")
-    public ResponseMessage findAlltype(@Valid PageSearch request, Principal principal) {
+    @GetMapping("/staff")
+    public ResponseMessage findAllByAdmin(@Valid PageSearch request, Principal principal) {
         Page<Customer> entityPage = service.findAllByAdmin(principal.getName(), request.getPage(),
                 request.getSize(), request.getSort());
+        
         List<Customer> entities = entityPage.toList();
 
         List<CustomerResponse> models = entities.stream()

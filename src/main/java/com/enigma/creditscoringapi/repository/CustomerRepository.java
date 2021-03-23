@@ -21,6 +21,5 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     @Query(nativeQuery = true, value = "UPDATE customer u SET u.is_deleted = true WHERE u.id = ?1")
     void softDelete(String id);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM customer WHERE customer.submitter = :username")
     Page<Customer> findAllBySubmitter(String username, Pageable pageable);
 }

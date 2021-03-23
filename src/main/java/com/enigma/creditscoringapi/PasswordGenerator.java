@@ -1,7 +1,5 @@
 package com.enigma.creditscoringapi;
 
-import com.enigma.creditscoringapi.entity.enums.ERole;
-
 public class PasswordGenerator {
     public static void main(String[] args) {
 //        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -17,9 +15,11 @@ public class PasswordGenerator {
 //        String saltStr = salt.toString().toLowerCase();
 //        System.out.println(saltStr);
 
-        ERole eRole = ERole.MASTER;
+        Boolean nice = null;
 
-        System.out.println(eRole.toString());
+        if (nice == null) System.out.println("a");
+        else if (nice) System.out.println("b");
+        else System.out.println("c");
 
     }
 

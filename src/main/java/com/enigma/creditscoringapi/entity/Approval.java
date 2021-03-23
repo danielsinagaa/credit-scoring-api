@@ -9,6 +9,10 @@ import javax.persistence.*;
 @Entity
 @Table
 @Data
+@NamedQuery(name = "Approval.findAllByStaff",
+query = "SELECT a FROM Approval a " +
+        "JOIN Transaction t ON (t.id = a.transaction)\n" +
+        "WHERE t.submitter =?1" )
 @Where(clause="is_deleted = 0")
 public class Approval extends TimeStamp {
     @GeneratedValue(generator = "approval_id", strategy = GenerationType.IDENTITY)
@@ -20,7 +24,7 @@ public class Approval extends TimeStamp {
     @JoinColumn(nullable = false)
     private Transaction transaction;
 
-    @Column(nullable = false)
+    @Column
     private Boolean approve;
 
     @Column(nullable = false)

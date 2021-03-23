@@ -51,7 +51,7 @@ public class ReportController {
         return getResponseMessage(entityPage);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/staff")
     public ResponseMessage findAllBySubmitter(PageSearch search, Principal principal){
         Page<TransactionReport> entityPage = service.findAllBySubmitter(principal.getName(),search.getPage(), search.getSize(), search.getSort());
 

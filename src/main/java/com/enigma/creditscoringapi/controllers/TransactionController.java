@@ -1,26 +1,24 @@
 package com.enigma.creditscoringapi.controllers;
 
+import com.enigma.creditscoringapi.entity.Approval;
 import com.enigma.creditscoringapi.entity.Customer;
 import com.enigma.creditscoringapi.entity.NeedType;
 import com.enigma.creditscoringapi.entity.Transaction;
-import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
-import com.enigma.creditscoringapi.models.*;
-import com.enigma.creditscoringapi.models.pages.PageSearch;
-import com.enigma.creditscoringapi.models.pages.PagedList;
+import com.enigma.creditscoringapi.models.ContractResponse;
+import com.enigma.creditscoringapi.models.TransactionRequest;
+import com.enigma.creditscoringapi.models.TransactionResponse;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
+import com.enigma.creditscoringapi.services.ApprovalService;
 import com.enigma.creditscoringapi.services.CustomerService;
 import com.enigma.creditscoringapi.services.NeedTypeService;
 import com.enigma.creditscoringapi.services.TransactionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @RequestMapping("/transaction")
@@ -38,6 +36,9 @@ public class TransactionController {
     @Autowired
     private NeedTypeService needTypeService;
 
+    @Autowired
+    private ApprovalService approvalService;
+
     private final DecimalFormat df = new DecimalFormat("#.##");
 
     @PostMapping
@@ -48,9 +49,9 @@ public class TransactionController {
         entity.setNeedType(needType);
 
         Customer customer = customerService.findById(request.getCustomer());
-        Double income = request.getIncome().doubleValue();
-
         entity.setCustomer(customer);
+
+        Double income = request.getIncome().doubleValue();
 
         Double loan = request.getLoan().doubleValue();
         Double mainLoan = request.getLoan().doubleValue() / request.getTenor();
@@ -97,83 +98,10 @@ public class TransactionController {
 
         TransactionResponse data = modelMapper.map(entity, TransactionResponse.class);
 
+        Approval approval = new Approval(entity, null, principal.getName());
+
+        approvalService.save(approval);
+
         return ResponseMessage.success(data);
     }
-
-    @GetMapping("/{id}")
-    public ResponseMessage findById(@PathVariable String id) {
-        Transaction entity = service.findById(id);
-        if (entity == null) {
-            throw new EntityNotFoundException();
-        }
-        TransactionResponseExt response = modelMapper.map(entity, TransactionResponseExt.class);
-
-        return ResponseMessage.success(response);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseMessage deleteById(@PathVariable String id) {
-        Transaction entity = service.findById(id);
-
-        if (entity == null) {
-            throw new EntityNotFoundException();
-        }
-
-        service.removeById(id);
-
-        TransactionResponse response = modelMapper.map(entity, TransactionResponse.class);
-
-        return ResponseMessage.success(response);
-    }
-
-    @GetMapping
-    public ResponseMessage findAll(PageSearch search) {
-        Page<Transaction> entityPage = service.findAll(new Transaction(), search.getPage(), search.getSize(), search.getSort());
-
-        List<Transaction> entities = entityPage.toList();
-
-        List<TransactionResponseExt> responses = entities.stream()
-                .map(e -> modelMapper.map(e, TransactionResponseExt.class))
-                .collect(Collectors.toList());
-
-        PagedList<TransactionResponseExt> response = new PagedList(responses, entityPage.getNumber(),
-                entityPage.getSize(), entityPage.getTotalElements());
-
-        return ResponseMessage.success(response);
-    }
-
-    @GetMapping("/type/non")
-    public ResponseMessage findAllNon(PageSearch search){
-        Page<Transaction> entityPage = service.findAllNon(search.getPage(), search.getSize(), search.getSort());
-
-        return getResponseMessage(entityPage);
-    }
-
-    @GetMapping("/type/contract")
-    public ResponseMessage findAllContract(PageSearch search){
-        Page<Transaction> entityPage = service.findAllContract(search.getPage(), search.getSize(), search.getSort());
-
-        return getResponseMessage(entityPage);
-    }
-
-    @GetMapping("/type/regular")
-    public ResponseMessage findAllRegular(PageSearch search){
-        Page<Transaction> entityPage = service.findAllRegular(search.getPage(), search.getSize(), search.getSort());
-
-        return getResponseMessage(entityPage);
-    }
-
-    private ResponseMessage getResponseMessage(Page<Transaction> entityPage) {
-        List<Transaction> entities = entityPage.toList();
-
-        List<ReportResponse> responses = entities.stream()
-                .map(e -> modelMapper.map(e, ReportResponse.class))
-                .collect(Collectors.toList());
-
-        PagedList<ReportResponse> response = new PagedList(responses, entityPage.getNumber(),
-                entityPage.getSize(), entityPage.getTotalElements());
-
-        return ResponseMessage.success(response);
-    }
-
 }

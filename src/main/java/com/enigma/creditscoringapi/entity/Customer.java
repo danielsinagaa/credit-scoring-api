@@ -11,6 +11,8 @@ import javax.persistence.*;
 @Table
 @Data
 @Where(clause="is_deleted = 0")
+@NamedQuery(name = "Customer.findAllBySubmitter",
+query = "SELECT c FROM Customer c WHERE c.submitter = ?1")
 @NamedQuery(name = "Customer.findAllContract",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT")
 @NamedQuery(name = "Customer.findAllNon",

@@ -1,7 +1,6 @@
 package com.enigma.creditscoringapi.controllers;
 
 import com.enigma.creditscoringapi.entity.Approval;
-import com.enigma.creditscoringapi.entity.Transaction;
 import com.enigma.creditscoringapi.entity.TransactionReport;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.ApprovalRequest;
@@ -38,26 +37,25 @@ public class ApprovalController {
     @Autowired
     ReportService reportService;
 
-    @PostMapping
-    public ResponseMessage add(@RequestBody ApprovalRequest request, Principal principal) {
-        Transaction transaction = transactionService.findById(request.getTransaction());
+    @PatchMapping("/{id}")
+    public ResponseMessage approve(@PathVariable String id, @RequestBody ApprovalRequest request){
+        Approval entity = service.findById(id);
 
-        Approval entity = new Approval(transaction, request.getApprove(), principal.getName());
-
+        entity.setApprove(request.getApprove());
         service.save(entity);
-
-        ApprovalResponse response = modelMapper.map(entity, ApprovalResponse.class);
 
         TransactionReport report = new TransactionReport();
         report.setApproval(entity);
 
-        LocalDate submitDate = LocalDate.from(transaction.getCreatedDate());
+        LocalDate submitDate = LocalDate.from(entity.getTransaction().getCreatedDate());
         LocalDate approvalDate = LocalDate.from(entity.getCreatedDate());
 
         report.setSubmitDate(submitDate);
         report.setApprovalDate(approvalDate);
 
         reportService.save(report);
+
+        ApprovalResponse response = modelMapper.map(entity, ApprovalResponse.class);
 
         return ResponseMessage.success(response);
     }
@@ -76,6 +74,22 @@ public class ApprovalController {
     @GetMapping
     public ResponseMessage findAll(PageSearch search) {
         Page<Approval> entityPage = service.findAll(new Approval(), search.getPage(), search.getSize(), search.getSort());
+
+        List<Approval> entities = entityPage.toList();
+
+        List<ApprovalResponse> responses = entities.stream()
+                .map(e -> modelMapper.map(e, ApprovalResponse.class))
+                .collect(Collectors.toList());
+
+        PagedList<ApprovalResponse> response = new PagedList(responses, entityPage.getNumber(),
+                entityPage.getSize(), entityPage.getTotalElements());
+
+        return ResponseMessage.success(response);
+    }
+
+    @GetMapping("/staff")
+    public ResponseMessage findAllByStaff(PageSearch search, Principal principal) {
+        Page<Approval> entityPage = service.findAllByAdmin(principal.getName(), search.getPage(), search.getSize(), search.getSort());
 
         List<Approval> entities = entityPage.toList();
 

@@ -142,7 +142,6 @@ public class MasterController {
             Role master = roleService.findRoleByName(ERole.MASTER);
             roles.add(master);
         }
-        System.out.println("this is error fak " +user);
 
         user.setRoles(roles);
         repository.save(user);

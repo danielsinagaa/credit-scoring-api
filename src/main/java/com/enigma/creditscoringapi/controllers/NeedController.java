@@ -2,13 +2,18 @@ package com.enigma.creditscoringapi.controllers;
 
 import com.enigma.creditscoringapi.entity.NeedType;
 import com.enigma.creditscoringapi.models.NeedTypeRequest;
+import com.enigma.creditscoringapi.models.NeedTypeResponse;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
+import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
 import com.enigma.creditscoringapi.services.NeedTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RequestMapping("/need")
@@ -23,6 +28,7 @@ public class NeedController {
     @PostMapping
     public ResponseMessage add(@RequestBody NeedTypeRequest request){
         NeedType needType = new NeedType(request.getType());
+        service.save(needType);
 
         return ResponseMessage.success(needType);
     }
@@ -44,8 +50,17 @@ public class NeedController {
 
     @GetMapping
     public ResponseMessage all(PageSearch search){
-        Page<NeedType> datas = service.findAll(new NeedType(), search.getPage(), search.getSize(), search.getSort());
+        Page<NeedType> entityPage = service.findAll(new NeedType(), search.getPage(), search.getSize(), search.getSort());
 
-        return ResponseMessage.success(datas);
+        List<NeedType> entities = entityPage.toList();
+
+        List<NeedTypeResponse> responses = entities.stream()
+                .map(e -> modelMapper.map(e, NeedTypeResponse.class))
+                .collect(Collectors.toList());
+
+        PagedList<NeedTypeResponse> response = new PagedList(responses, entityPage.getNumber(),
+                entityPage.getSize(), entityPage.getTotalElements());
+
+        return ResponseMessage.success(response);
     }
 }
