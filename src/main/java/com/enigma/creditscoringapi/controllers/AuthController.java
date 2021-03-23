@@ -1,18 +1,13 @@
 package com.enigma.creditscoringapi.controllers;
 
-import com.enigma.creditscoringapi.entity.Role;
 import com.enigma.creditscoringapi.entity.Users;
-import com.enigma.creditscoringapi.entity.enums.ERole;
-import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.JwtResponse;
 import com.enigma.creditscoringapi.models.LoginRequest;
-import com.enigma.creditscoringapi.models.SignUpRequest;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
 import com.enigma.creditscoringapi.repository.UsersRepository;
 import com.enigma.creditscoringapi.security.jwt.JwtUtils;
 import com.enigma.creditscoringapi.security.service.UserDetailsImpl;
 import com.enigma.creditscoringapi.services.RoleService;
-import com.enigma.creditscoringapi.services.SendEmailService;
 import com.enigma.creditscoringapi.services.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -53,9 +47,6 @@ public class AuthController {
     @Autowired
     PasswordEncoder encoder;
 
-    @Autowired
-    private SendEmailService sendEmailService;
-
     @PostMapping("/login")
     public ResponseMessage authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -67,7 +58,7 @@ public class AuthController {
             }
         }
 
-        if (!user.getActive() || !user.getIsVerified()) {
+        if (!user.getIsVerified()) {
             return new ResponseMessage(403, "account has not been verified yet", null);
         }
 
@@ -91,28 +82,10 @@ public class AuthController {
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles.get(0),
-                user.getFullName());
+                user.getFullName(),
+                user.getId());
 
         return ResponseMessage.success(response);
-    }
-
-    @PostMapping("/forgot")
-    public ResponseMessage forgotPassword(@Valid @RequestBody SignUpRequest request) throws MessagingException {
-        Users users = repository.getByEmail(request.getEmail());
-
-        if (users == null){
-            throw new EntityNotFoundException();
-        }
-
-        String newPassword = randomPassword();
-
-        users.setPassword(encoder.encode(newPassword));
-
-        usersService.save(users);
-
-        sendEmailService.forgotPassword(users.getUsername(), newPassword, users.getEmail());
-
-        return new ResponseMessage(200, "success", "verification email has been sent");
     }
 
     @GetMapping("/verification/{token}")
@@ -126,62 +99,6 @@ public class AuthController {
             usersService.save(user);
             return new ResponseMessage(200, "Verification token is success.", null);
         }
-    }
-
-    @PostMapping("/signup")
-    public ResponseMessage registerUser(@Valid @RequestBody SignUpRequest request) {
-
-        if (repository.existsByUsername(request.getUsername())) {
-
-            return new ResponseMessage(409, "not allowed", " username is already use");
-        }
-
-        if (repository.existsByEmail(request.getEmail())) {
-            return new ResponseMessage(409, "not allowed", " email is already use");
-        }
-
-        String token = generateVerificationToken();
-
-        Users user = modelMapper.map(request, Users.class);
-        user.setPassword(encoder.encode(request.getPassword()));
-        user.setIsVerified(false);
-        user.setVerifiedToken(token);
-
-        if (request.getProfilePicture().isEmpty() || request.getProfilePicture().isBlank() || request.getProfilePicture() == null){
-            user.setProfilePicture("https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png");
-        }
-
-        String strRoles = request.getRole();
-        List<Role> roles = new ArrayList<>();
-
-        if (strRoles == null) {
-            Role staff = service.findRoleByName(ERole.STAFF);
-            roles.add(staff);
-        } else if (strRoles.contains("MASTER")) {
-            Role master = service.findRoleByName(ERole.MASTER);
-            roles.add(master);
-        } else {
-            Role supervisor = service.findRoleByName(ERole.SUPERVISOR);
-            roles.add(supervisor);
-        }
-
-        user.setRoles(roles);
-        repository.save(user);
-
-        return ResponseMessage.success("User Registered successfully");
-    }
-
-    private String generateVerificationToken() {
-        String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder stringBuilder = new StringBuilder();
-        Random rnd = new Random();
-
-        while (stringBuilder.length() <= 20) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * characters.length());
-            stringBuilder.append(characters.charAt(index));
-        }
-
-        return stringBuilder.toString();
     }
 
     @GetMapping("/username/{username}")
@@ -204,18 +121,4 @@ public class AuthController {
         return ResponseMessage.success(true);
     }
 
-    private String randomPassword() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-
-        while (salt.length() < 10) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-
-        String saltStr = salt.toString();
-        return saltStr;
-    }
 }

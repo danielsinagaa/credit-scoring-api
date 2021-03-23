@@ -3,6 +3,8 @@ package com.enigma.creditscoringapi.models;
 import com.enigma.creditscoringapi.entity.enums.EmployeeType;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class CustomerRequest {
     private String name;
@@ -19,7 +21,7 @@ public class CustomerRequest {
 
     private String address;
 
-    private String contractStart;
+    private LocalDate contractStart;
 
     private Integer contractLength;
 }

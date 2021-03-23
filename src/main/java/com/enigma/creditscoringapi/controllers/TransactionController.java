@@ -1,6 +1,7 @@
 package com.enigma.creditscoringapi.controllers;
 
 import com.enigma.creditscoringapi.entity.Customer;
+import com.enigma.creditscoringapi.entity.NeedType;
 import com.enigma.creditscoringapi.entity.Transaction;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.*;
@@ -8,6 +9,7 @@ import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
 import com.enigma.creditscoringapi.services.CustomerService;
+import com.enigma.creditscoringapi.services.NeedTypeService;
 import com.enigma.creditscoringapi.services.TransactionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,34 +35,29 @@ public class TransactionController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private NeedTypeService needTypeService;
+
     private final DecimalFormat df = new DecimalFormat("#.##");
 
     @PostMapping
     public ResponseMessage add(@RequestBody TransactionRequest request, Principal principal) {
         Transaction entity = modelMapper.map(request, Transaction.class);
 
+        NeedType needType = needTypeService.findById(request.getNeedType());
+        entity.setNeedType(needType);
+
         Customer customer = customerService.findById(request.getCustomer());
         Double income = request.getIncome().doubleValue();
 
         entity.setCustomer(customer);
 
-        switch (customer.getEmployeeType()) {
-            case CONTRACT:
-            case NON:
-                income /= 2;
-                break;
-            default:
-                income = request.getIncome().doubleValue();
-        }
-
         Double loan = request.getLoan().doubleValue();
-
         Double mainLoan = request.getLoan().doubleValue() / request.getTenor();
 
         entity.setMainLoan(Double.valueOf(df.format(mainLoan)));
 
         Double interestRate = Double.valueOf(request.getInterestRate());
-
         Double interest = (loan * interestRate) / 100;
 
         entity.setInterest(Double.valueOf(df.format(interest)));

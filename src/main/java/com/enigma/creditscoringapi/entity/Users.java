@@ -7,7 +7,6 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,25 +21,18 @@ public class Users extends TimeStamp{
     @GeneratedValue(generator = "id_users", strategy = GenerationType.IDENTITY)
     private String id;
 
-    @NotBlank
-    @Size(min = 4, max = 20)
     @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String fullName;
 
-    @NotBlank
-    @Size(max = 50)
     @Email
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column
     private Boolean isVerified;
-
-    @Column
-    private Boolean active;
 
     @Column(nullable = false)
     private String verifiedToken;
@@ -49,7 +41,7 @@ public class Users extends TimeStamp{
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private String profilePicture;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -64,7 +56,6 @@ public class Users extends TimeStamp{
     public void prepersist() {
         dateRegister = LocalDate.now();
         isVerified = false;
-        active = false;
     }
 
 }

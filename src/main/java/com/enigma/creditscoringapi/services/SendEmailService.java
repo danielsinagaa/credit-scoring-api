@@ -26,13 +26,15 @@ public class SendEmailService {
         javaMailSender.send(mimeMessage);
     }
 
-
-    public void sendEmailVerificationToken(String token, String to) throws MessagingException {
+    public void sendEmailVerificationToken(String username, String password,String token, String to) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
 
         String message = "" +
                 "<h3>Click link below to activation your account.</h3>" +
+                "<p>username: " + username +"</p>" +
+                "<p>password: " + password +"</p>" +
+                "<p>verification link, click to activate the account: </p>"+
                 "<a href='http://localhost:8085/auth/verification/" + token + "'>" +
                 "http://localhost:8085/auth/verification/" + token +
                 "</a>";

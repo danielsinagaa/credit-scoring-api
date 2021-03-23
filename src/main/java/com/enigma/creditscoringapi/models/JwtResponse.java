@@ -9,12 +9,14 @@ public class JwtResponse {
     private String email;
     private String roles;
     private String fullName;
+    private String id;
 
-    public JwtResponse(String token, String username, String email, String roles, String fullName) {
+    public JwtResponse(String token, String username, String email, String roles, String fullName, String id) {
         this.token = token;
         this.username = username;
         this.email = email;
         this.roles = roles;
         this.fullName = fullName;
+        this.id = id;
     }
 }

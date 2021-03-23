@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleService {
@@ -26,7 +27,13 @@ public class RoleService {
         }
     }
 
+    public List<String> allRoleName(){
+        return roleRepository.findAll().stream()
+                .map( e -> e.getName().toString())
+                .collect(Collectors.toList());
+    }
+
     public Role findRoleByName(ERole name) {
-        return roleRepository.findByName(name).orElseThrow(()->new RuntimeException("Error: yRole is not found"));
+        return roleRepository.findByName(name).orElseThrow(()->new RuntimeException("Role is not found"));
     }
 }

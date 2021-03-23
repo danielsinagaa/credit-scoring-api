@@ -1,6 +1,5 @@
 package com.enigma.creditscoringapi.entity;
 
-import com.enigma.creditscoringapi.entity.enums.NeedType;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
@@ -24,6 +23,7 @@ import javax.persistence.*;
                 "JOIN Customer c ON (c.id = t.customer)\n" +
                 "WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR")
 public class Transaction extends TimeStamp{
+
     @GeneratedValue(generator = "transaction_id", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "transaction_id", strategy = "uuid")
     @Id
@@ -32,6 +32,10 @@ public class Transaction extends TimeStamp{
     @ManyToOne
     @JoinColumn(nullable = false)
     Customer customer;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    NeedType needType;
 
     @Column(nullable = false)
     private Integer income;
@@ -71,10 +75,6 @@ public class Transaction extends TimeStamp{
 
     @Column(nullable = false)
     private String notes;
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
-    private NeedType needType;
 
     @Column
     private Boolean employeeCriteria;

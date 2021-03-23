@@ -1,6 +1,5 @@
 package com.enigma.creditscoringapi.models;
 
-import com.enigma.creditscoringapi.entity.enums.NeedType;
 import lombok.Data;
 
 @Data
@@ -29,7 +28,7 @@ public class TransactionResponse {
 
     private Double installment;
 
-    private NeedType needType;
+    private NeedTypeResponse needType;
 
     private String submitter;
 }

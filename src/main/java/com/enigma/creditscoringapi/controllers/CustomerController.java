@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,8 +37,6 @@ public class CustomerController {
     @PostMapping
     public ResponseMessage add(@RequestBody CustomerRequest request, Principal principal) {
 
-        DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
         Customer entity;
         CustomerResponse response;
 
@@ -51,7 +48,7 @@ public class CustomerController {
                 break;
             case CONTRACT:
                 ContractEmployee contract = modelMapper.map(request, ContractEmployee.class);
-                LocalDate date = LocalDate.parse(request.getContractStart(), formatters);
+                LocalDate date = request.getContractStart();
                 contract.setContractStart(date);
                 contract.setContractEnd(date.plusMonths(request.getContractLength()));
                 entity = contract;
@@ -97,6 +94,9 @@ public class CustomerController {
         }
 
         service.softDelete(id);
+        entity.setIdNumber(Long.valueOf("10" + entity.getIdNumber() + "000"));
+
+        service.save(entity);
 
         CustomerResponse response = modelMapper.map(entity, CustomerResponse.class);
         return ResponseMessage.success(response);

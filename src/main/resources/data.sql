@@ -13,14 +13,13 @@
 --         SELECT users.username FROM users WHERE username = 'masteradmin'
 --     ) LIMIT 1;
 
-INSERT IGNORE users (id, email, is_verified, password, username, date_register, active, full_name, profile_picture, verified_token, is_deleted, created_date)
+INSERT IGNORE users (id, email, is_verified, password, username, date_register, full_name, profile_picture, verified_token, is_deleted, created_date)
 VALUES ( 'f906a295847742309a4de4101dea0c55',
         'solehsolihin2021@gmail.com',
         true,
         '$2a$10$1plWUsDFrI7KQtjN5g9skuN7aFwYiobMvgLN1PNirxQXSHMJ7wkfu',
         'masteradmin',
         current_date,
-        true,
         'natasha romanov',
         'https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png',
         'potatolalalala',

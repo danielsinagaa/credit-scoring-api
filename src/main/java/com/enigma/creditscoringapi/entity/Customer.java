@@ -51,7 +51,7 @@ public class Customer extends TimeStamp {
 
     @PrePersist
     public void prepersist() {
-        if (profilePhoto == null) {
+        if (profilePhoto == null || profilePhoto.isBlank() || profilePhoto.isEmpty()) {
             profilePhoto = "https://res.cloudinary.com/nielnaga/image/upload/v1615870303/download-removebg-preview_zyrump.png";
         }
     }

@@ -2,6 +2,7 @@ package com.enigma.creditscoringapi.security;
 
 import com.enigma.creditscoringapi.security.jwt.AuthEntryPointJwt;
 import com.enigma.creditscoringapi.security.service.UserDetailsServiceImpl;
+import com.enigma.creditscoringapi.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    RoleService roleService;
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;
@@ -51,16 +55,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String[] roles = new String[roleService.allRoleName().size()];
+        roles = roleService.allRoleName().toArray(roles);
+
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/users").hasAnyAuthority("SUPERVISOR", "MASTER")
-                .antMatchers(HttpMethod.GET,"/users/activate/**").hasAnyAuthority("SUPERVISOR", "MASTER")
-                .antMatchers(HttpMethod.PATCH, "/users/**").hasAnyAuthority("SUPERVISOR", "MASTER", "STAFF")
-                .antMatchers(HttpMethod.GET, "/users/email/**").hasAnyAuthority("SUPERVISOR", "MASTER", "STAFF")
-                .antMatchers(HttpMethod.GET, "/users/password/**").hasAnyAuthority("SUPERVISOR", "MASTER", "STAFF")
+                .antMatchers(HttpMethod.PATCH, "/users/**").hasAnyAuthority(roles)
+                .antMatchers(HttpMethod.GET, "/users/email/**").hasAnyAuthority(roles)
+                .antMatchers(HttpMethod.GET, "/users/password/**").hasAnyAuthority(roles)
                 .antMatchers("/customer/**").hasAnyAuthority("STAFF", "MASTER")
                 .antMatchers(HttpMethod.POST, "/transaction").hasAnyAuthority("STAFF", "MASTER")
                 .antMatchers("/transaction/**").hasAnyAuthority("SUPERVISOR", "MASTER")
