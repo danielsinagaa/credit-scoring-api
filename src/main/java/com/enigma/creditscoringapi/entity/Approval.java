@@ -10,10 +10,30 @@ import javax.persistence.*;
 @Table
 @Data
 @NamedQuery(name = "Approval.findAllByStaff",
-query = "SELECT a FROM Approval a " +
-        "JOIN Transaction t ON (t.id = a.transaction)\n" +
-        "WHERE t.submitter =?1" )
-@Where(clause="is_deleted = 0")
+        query = "SELECT a FROM Approval a " +
+                "JOIN Transaction t ON (t.id = a.transaction)\n" +
+                "WHERE t.submitter =?1")
+@NamedQuery(name = "Approval.findAllNull",
+        query = "SELECT a FROM Approval a " +
+                "WHERE a.approve IS NULL ")
+@NamedQuery(name = "Approval.findAllNotNull",
+        query = "SELECT a FROM Approval a " +
+                "WHERE a.approve IS NOT NULL ")
+@NamedQuery(name = "Approval.findNullById",
+        query = "SELECT a FROM Approval a " +
+                "WHERE a.approve IS NULL " +
+                "AND a.id = ?1")
+@NamedQuery(name = "Approval.findNotNullById",
+        query = "SELECT a FROM Approval a " +
+                "WHERE a.approve IS NOT NULL " +
+                "AND a.id = ?1")
+@NamedQuery(name = "Approval.findAllApproved",
+        query = "SELECT a FROM Approval a " +
+                "WHERE a.approve = true ")
+@NamedQuery(name = "Approval.findAllRejected",
+        query = "SELECT a FROM Approval a " +
+                "WHERE a.approve = false ")
+@Where(clause = "is_deleted = 0")
 public class Approval extends TimeStamp {
     @GeneratedValue(generator = "approval_id", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "approval_id", strategy = "uuid")

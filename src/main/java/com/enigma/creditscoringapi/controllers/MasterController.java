@@ -17,6 +17,7 @@ import com.enigma.creditscoringapi.services.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,26 +70,28 @@ public class MasterController {
         return new ResponseMessage(200, "users : " + users.getUsername() + " deleted", response);
     }
 
-
     @GetMapping
     public ResponseMessage findAll(PageSearch search) {
 
         Page<Users> users = service.findAll(new Users(), search.getPage(), search.getSize(), search.getSort());
 
-        List<Users> usersList = users.toList();
+        return getResponseMessage(users);
+    }
 
-        List<UserResponse> responses = usersList.stream()
-                .map(e -> modelMapper.map(e, UserResponse.class))
-                .collect(Collectors.toList());
+    @GetMapping("/notverified")
+    public ResponseMessage notverified(PageSearch search) {
 
-        for (UserResponse u : responses){
-            u.setRole(u.getRoles().get(0).getName().name());
-        }
+        Page<Users> users = repository.findAllNotVerified(PageRequest.of(search.getPage(), search.getSize(), search.getSort()));
 
-        PagedList<ReportResponse> response = new PagedList(responses, users.getNumber(),
-                users.getSize(), users.getTotalElements());
+        return getResponseMessage(users);
+    }
 
-        return ResponseMessage.success(response);
+    @GetMapping("/verified")
+    public ResponseMessage allVerified(PageSearch search) {
+
+        Page<Users> users = repository.findAllVerified(PageRequest.of(search.getPage(), search.getSize(), search.getSort()));
+
+        return getResponseMessage(users);
     }
 
     @GetMapping("/{id}")
@@ -177,6 +180,23 @@ public class MasterController {
         }
 
         return stringBuilder.toString();
+    }
+
+    private ResponseMessage getResponseMessage(Page<Users> users) {
+        List<Users> usersList = users.toList();
+
+        List<UserResponse> responses = usersList.stream()
+                .map(e -> modelMapper.map(e, UserResponse.class))
+                .collect(Collectors.toList());
+
+        for (UserResponse u : responses){
+            u.setRole(u.getRoles().get(0).getName().name());
+        }
+
+        PagedList<ReportResponse> response = new PagedList(responses, users.getNumber(),
+                users.getSize(), users.getTotalElements());
+
+        return ResponseMessage.success(response);
     }
 
 }

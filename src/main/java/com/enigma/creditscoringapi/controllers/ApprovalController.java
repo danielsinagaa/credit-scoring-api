@@ -5,6 +5,7 @@ import com.enigma.creditscoringapi.entity.TransactionReport;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.ApprovalRequest;
 import com.enigma.creditscoringapi.models.ApprovalResponse;
+import com.enigma.creditscoringapi.models.ApprovalResponseExt;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
@@ -48,13 +49,23 @@ public class ApprovalController {
         report.setApproval(entity);
 
         LocalDate submitDate = LocalDate.from(entity.getTransaction().getCreatedDate());
-        LocalDate approvalDate = LocalDate.from(entity.getCreatedDate());
 
         report.setSubmitDate(submitDate);
-        report.setApprovalDate(approvalDate);
+        report.setApprovalDate(LocalDate.now());
 
         reportService.save(report);
 
+        ApprovalResponse response = modelMapper.map(entity, ApprovalResponse.class);
+
+        return ResponseMessage.success(response);
+    }
+
+    @GetMapping("/staff/{id}")
+    public ResponseMessage findByIdStaff(@PathVariable String id) {
+        Approval entity = service.findById(id);
+        if (entity == null) {
+            throw new EntityNotFoundException();
+        }
         ApprovalResponse response = modelMapper.map(entity, ApprovalResponse.class);
 
         return ResponseMessage.success(response);
@@ -66,7 +77,7 @@ public class ApprovalController {
         if (entity == null) {
             throw new EntityNotFoundException();
         }
-        ApprovalResponse response = modelMapper.map(entity, ApprovalResponse.class);
+        ApprovalResponseExt response = modelMapper.map(entity, ApprovalResponseExt.class);
 
         return ResponseMessage.success(response);
     }
@@ -75,16 +86,28 @@ public class ApprovalController {
     public ResponseMessage findAll(PageSearch search) {
         Page<Approval> entityPage = service.findAll(new Approval(), search.getPage(), search.getSize(), search.getSort());
 
-        List<Approval> entities = entityPage.toList();
+        return getResponseMessage(entityPage);
+    }
 
-        List<ApprovalResponse> responses = entities.stream()
-                .map(e -> modelMapper.map(e, ApprovalResponse.class))
-                .collect(Collectors.toList());
+    @GetMapping("/waiting")
+    public ResponseMessage findAllNull(PageSearch search) {
+        Page<Approval> entityPage = service.findAllNull(search.getPage(), search.getSize(), search.getSort());
 
-        PagedList<ApprovalResponse> response = new PagedList(responses, entityPage.getNumber(),
-                entityPage.getSize(), entityPage.getTotalElements());
+        return getResponseMessage(entityPage);
+    }
 
-        return ResponseMessage.success(response);
+    @GetMapping("/approved")
+    public ResponseMessage findAllApproved(PageSearch search) {
+        Page<Approval> entityPage = service.findAllApproved(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/rejected")
+    public ResponseMessage findAllRejected(PageSearch search) {
+        Page<Approval> entityPage = service.findAllRejected(search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
     }
 
     @GetMapping("/staff")
@@ -98,6 +121,19 @@ public class ApprovalController {
                 .collect(Collectors.toList());
 
         PagedList<ApprovalResponse> response = new PagedList(responses, entityPage.getNumber(),
+                entityPage.getSize(), entityPage.getTotalElements());
+
+        return ResponseMessage.success(response);
+    }
+
+    private ResponseMessage getResponseMessage(Page<Approval> entityPage) {
+        List<Approval> entities = entityPage.toList();
+
+        List<ApprovalResponseExt> responses = entities.stream()
+                .map(e -> modelMapper.map(e, ApprovalResponseExt.class))
+                .collect(Collectors.toList());
+
+        PagedList<ApprovalResponseExt> response = new PagedList(responses, entityPage.getNumber(),
                 entityPage.getSize(), entityPage.getTotalElements());
 
         return ResponseMessage.success(response);

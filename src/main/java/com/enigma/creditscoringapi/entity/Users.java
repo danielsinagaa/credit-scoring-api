@@ -14,8 +14,14 @@ import java.util.List;
 @Entity
 @Table
 @Data
-@Where(clause="is_deleted = 0")
-public class Users extends TimeStamp{
+@NamedQuery(name = "Users.findAllNotVerified",
+        query = "SELECT u FROM Users u " +
+                "WHERE u.isVerified = false ")
+@NamedQuery(name = "Users.findAllVerified",
+        query = "SELECT u FROM Users u " +
+                "WHERE u.isVerified = true ")
+@Where(clause = "is_deleted = 0")
+public class Users extends TimeStamp {
     @Id
     @GenericGenerator(name = "id_users", strategy = "uuid2")
     @GeneratedValue(generator = "id_users", strategy = GenerationType.IDENTITY)

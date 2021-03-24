@@ -19,8 +19,6 @@ public class UserResponse {
 
     private Boolean isVerified;
 
-    private Boolean active;
-
     private String profilePicture;
 
     @JsonIgnore

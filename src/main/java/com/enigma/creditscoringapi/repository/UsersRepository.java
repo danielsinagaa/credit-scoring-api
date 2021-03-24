@@ -1,6 +1,8 @@
 package com.enigma.creditscoringapi.repository;
 
 import com.enigma.creditscoringapi.entity.Users;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +30,8 @@ public interface UsersRepository extends JpaRepository<Users, String> {
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE users u SET u.is_deleted = true WHERE u.id = ?1")
     void softDelete(String id);
+
+    Page<Users> findAllVerified(Pageable pageable);
+
+    Page<Users> findAllNotVerified(Pageable pageable);
 }

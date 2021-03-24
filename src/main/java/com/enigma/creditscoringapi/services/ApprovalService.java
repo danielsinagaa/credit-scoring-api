@@ -24,4 +24,28 @@ public class ApprovalService extends AbstractService<Approval, String> {
                 Sort.by(direction, "name") : Sort.by("name");
         return repository.findAllByStaff(username, PageRequest.of(page, size, sort));
     }
+
+    public Page<Approval> findAllNull(int page, int size, Sort.Direction direction){
+        Sort sort = Sort.Direction.DESC.equals(direction) ?
+                Sort.by(direction, "name") : Sort.by("name");
+        return repository.findAllNull(PageRequest.of(page, size, sort));
+    }
+
+    public Page<Approval> findAllNotNull(int page, int size, Sort.Direction direction){
+        Sort sort = Sort.Direction.DESC.equals(direction) ?
+                Sort.by(direction, "name") : Sort.by("name");
+        return repository.findAllNotNull(PageRequest.of(page, size, sort));
+    }
+
+    public Page<Approval> findAllApproved(int page, int size, Sort.Direction direction){
+        Sort sort = Sort.Direction.DESC.equals(direction) ?
+                Sort.by(direction, "name") : Sort.by("name");
+        return repository.findAllApproved(PageRequest.of(page, size, sort));
+    }
+
+    public Page<Approval> findAllRejected(int page, int size, Sort.Direction direction){
+        Sort sort = Sort.Direction.DESC.equals(direction) ?
+                Sort.by(direction, "name") : Sort.by("name");
+        return repository.findAllRejected(PageRequest.of(page, size, sort));
+    }
 }
