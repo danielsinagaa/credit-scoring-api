@@ -41,6 +41,7 @@ public class ApprovalController {
     @PatchMapping("/{id}")
     public ResponseMessage approve(@PathVariable String id, @RequestBody ApprovalRequest request){
         Approval entity = service.findById(id);
+        System.out.println(entity);
 
         entity.setApprove(request.getApprove());
         service.save(entity);

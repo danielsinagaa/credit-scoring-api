@@ -22,4 +22,6 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     void softDelete(String id);
 
     Page<Customer> findAllBySubmitter(String username, Pageable pageable);
+
+    Boolean existsCustomerByIdNumber(Long idNumber);
 }

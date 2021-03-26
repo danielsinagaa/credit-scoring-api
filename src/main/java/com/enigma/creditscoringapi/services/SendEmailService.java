@@ -45,15 +45,14 @@ public class SendEmailService {
         javaMailSender.send(mimeMessage);
     }
 
-    public void forgotPassword(String username, String password, String to) throws MessagingException {
+    public void editUser(String username, String password, String to) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
 
         String message = "" +
-                "<h3>This is you new password</h3>" +
+                "<h3>Your account has been edited</h3>" +
                 "<p>username: " + username +"</p>" +
-                "<p>new password: " + password +"</p>" +
-                "<p>JANGAN LUPA PASSWORD LAGI SU</p>";
+                "<p>new password: " + password +"</p>";
 
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject("Forgot Password");

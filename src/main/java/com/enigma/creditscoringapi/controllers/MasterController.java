@@ -67,7 +67,7 @@ public class MasterController {
 
         service.softDelete(id);
 
-        return new ResponseMessage(200, "users : " + users.getUsername() + " deleted", response);
+        return new ResponseMessage(200, "users : " + users.getUsername() , response);
     }
 
     @GetMapping
@@ -76,6 +76,19 @@ public class MasterController {
         Page<Users> users = service.findAll(new Users(), search.getPage(), search.getSize(), search.getSort());
 
         return getResponseMessage(users);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseMessage editUser(@PathVariable String id, @RequestBody SignUpRequest request) throws MessagingException {
+        Users entity = service.findById(id);
+
+        modelMapper.map(request, entity);
+
+        service.save(entity);
+
+        sendEmailService.editUser(entity.getUsername(), entity.getPassword(), entity.getEmail());
+
+        return ResponseMessage.success(entity);
     }
 
     @GetMapping("/notverified")

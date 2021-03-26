@@ -19,14 +19,6 @@ import javax.persistence.*;
 @NamedQuery(name = "Approval.findAllNotNull",
         query = "SELECT a FROM Approval a " +
                 "WHERE a.approve IS NOT NULL ")
-@NamedQuery(name = "Approval.findNullById",
-        query = "SELECT a FROM Approval a " +
-                "WHERE a.approve IS NULL " +
-                "AND a.id = ?1")
-@NamedQuery(name = "Approval.findNotNullById",
-        query = "SELECT a FROM Approval a " +
-                "WHERE a.approve IS NOT NULL " +
-                "AND a.id = ?1")
 @NamedQuery(name = "Approval.findAllApproved",
         query = "SELECT a FROM Approval a " +
                 "WHERE a.approve = true ")

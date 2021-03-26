@@ -12,9 +12,11 @@ import com.enigma.creditscoringapi.models.CustomerResponse;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
+import com.enigma.creditscoringapi.repository.CustomerRepository;
 import com.enigma.creditscoringapi.services.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,11 +36,19 @@ public class CustomerController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Qualifier("customerRepository")
+    @Autowired
+    private CustomerRepository repository;
+
     @PostMapping
     public ResponseMessage add(@RequestBody CustomerRequest request, Principal principal) {
 
         Customer entity;
         CustomerResponse response;
+
+        if (repository.existsCustomerByIdNumber(request.getIdNumber())){
+            return new ResponseMessage(400, "Id Number Already Exist", "Id Number Already Exist");
+        }
 
         switch (request.getEmployeeType()) {
             case REGULAR:

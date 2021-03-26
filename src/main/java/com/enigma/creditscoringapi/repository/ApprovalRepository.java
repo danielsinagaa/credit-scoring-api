@@ -16,8 +16,4 @@ public interface ApprovalRepository extends JpaRepository<Approval, String> {
     Page<Approval> findAllApproved(Pageable pageable);
 
     Page<Approval> findAllRejected(Pageable pageable);
-
-    Approval findNullById(String id);
-
-    Approval findNotNullById(String id);
 }
