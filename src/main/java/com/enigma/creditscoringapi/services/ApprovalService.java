@@ -21,31 +21,31 @@ public class ApprovalService extends AbstractService<Approval, String> {
 
     public Page<Approval> findAllByAdmin(String username, int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllByStaff(username, PageRequest.of(page, size, sort));
     }
 
     public Page<Approval> findAllNull(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllNull(PageRequest.of(page, size, sort));
     }
 
     public Page<Approval> findAllNotNull(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "modifiedDate") : Sort.by("createdDate");
         return repository.findAllNotNull(PageRequest.of(page, size, sort));
     }
 
     public Page<Approval> findAllApproved(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "modifiedDate") : Sort.by("createdDate");
         return repository.findAllApproved(PageRequest.of(page, size, sort));
     }
 
     public Page<Approval> findAllRejected(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "modifiedDate") : Sort.by("createdDate");
         return repository.findAllRejected(PageRequest.of(page, size, sort));
     }
 }

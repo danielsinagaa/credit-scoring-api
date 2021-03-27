@@ -195,11 +195,11 @@ public class CustomerController {
     private ResponseMessage getResponseMessage(Page<Customer> entityPage) {
         List<Customer> entities = entityPage.toList();
 
-        List<CustomerResponse> responses = entities.stream()
-                .map(e -> modelMapper.map(e, CustomerResponse.class))
+        List<ContractResponse> responses = entities.stream()
+                .map(e -> modelMapper.map(e, ContractResponse.class))
                 .collect(Collectors.toList());
 
-        PagedList<CustomerResponse> response = new PagedList(responses, entityPage.getNumber(),
+        PagedList<ContractResponse> response = new PagedList(responses, entityPage.getNumber(),
                 entityPage.getSize(), entityPage.getTotalElements());
 
         return ResponseMessage.success(response);

@@ -15,7 +15,8 @@ import java.time.LocalDate;
 query = "SELECT tr FROM TransactionReport tr\n" +
         "JOIN Approval a ON (a.id = tr.approval)\n" +
         "JOIN Transaction t ON (t.id = a.transaction)\n" +
-        "WHERE t.submitter =?1" )
+        "WHERE t.submitter =?1\n " +
+        "ORDER BY tr.createdDate DESC" )
 @NamedQuery(name = "TransactionReport.findAllContract",
         query = "SELECT tr FROM TransactionReport tr\n" +
                 "JOIN Approval a ON (a.id = tr.approval)\n" +

@@ -21,19 +21,19 @@ public class TransactionService extends AbstractService<Transaction, String> {
 
     public Page<Transaction> findAllContract(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllContract(PageRequest.of(page, size, sort));
     }
 
     public Page<Transaction> findAllNon(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllNon(PageRequest.of(page, size, sort));
     }
 
     public Page<Transaction> findAllRegular(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllRegular(PageRequest.of(page, size, sort));
     }
 }

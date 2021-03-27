@@ -1,15 +1,16 @@
 package com.enigma.creditscoringapi.controllers;
 
 import com.enigma.creditscoringapi.entity.Approval;
+import com.enigma.creditscoringapi.entity.Customer;
 import com.enigma.creditscoringapi.entity.TransactionReport;
+import com.enigma.creditscoringapi.entity.enums.EmployeeType;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
-import com.enigma.creditscoringapi.models.ApprovalRequest;
-import com.enigma.creditscoringapi.models.ApprovalResponse;
-import com.enigma.creditscoringapi.models.ApprovalResponseExt;
+import com.enigma.creditscoringapi.models.*;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
 import com.enigma.creditscoringapi.services.ApprovalService;
+import com.enigma.creditscoringapi.services.CustomerService;
 import com.enigma.creditscoringapi.services.ReportService;
 import com.enigma.creditscoringapi.services.TransactionService;
 import org.modelmapper.ModelMapper;
@@ -37,6 +38,9 @@ public class ApprovalController {
 
     @Autowired
     ReportService reportService;
+
+    @Autowired
+    CustomerService customerService;
 
     @PatchMapping("/{id}")
     public ResponseMessage approve(@PathVariable String id, @RequestBody ApprovalRequest request){
@@ -69,6 +73,13 @@ public class ApprovalController {
         }
         ApprovalResponse response = modelMapper.map(entity, ApprovalResponse.class);
 
+        Customer customer = entity.getTransaction().getCustomer();
+
+        if (customer.getEmployeeType() == EmployeeType.CONTRACT) {
+            CustomerResponse customerResponse = modelMapper.map(customer, ContractResponse.class);
+            response.getTransaction().setCustomer(customerResponse);
+        }
+
         return ResponseMessage.success(response);
     }
 
@@ -79,6 +90,13 @@ public class ApprovalController {
             throw new EntityNotFoundException();
         }
         ApprovalResponseExt response = modelMapper.map(entity, ApprovalResponseExt.class);
+
+        Customer customer = entity.getTransaction().getCustomer();
+
+        if (customer.getEmployeeType() == EmployeeType.CONTRACT) {
+            CustomerResponse customerResponse = modelMapper.map(customer, ContractResponse.class);
+            response.getTransaction().setCustomer(customerResponse);
+        }
 
         return ResponseMessage.success(response);
     }

@@ -9,7 +9,15 @@ import org.springframework.stereotype.Service;
 public class NeedTypeService extends AbstractService<NeedType, String> {
 
     @Autowired
+    NeedTypeRepository repository;
+
+    @Autowired
     public NeedTypeService(NeedTypeRepository repository) {
         super(repository);
     }
+
+    public void softDelete(String id) {
+        repository.softDelete(id);
+    }
+
 }

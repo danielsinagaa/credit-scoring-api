@@ -12,19 +12,24 @@ import javax.persistence.*;
 @NamedQuery(name = "Approval.findAllByStaff",
         query = "SELECT a FROM Approval a " +
                 "JOIN Transaction t ON (t.id = a.transaction)\n" +
-                "WHERE t.submitter =?1")
+                "WHERE t.submitter =?1 AND a.approve IS NULL \n" +
+                "ORDER BY a.createdDate DESC ")
 @NamedQuery(name = "Approval.findAllNull",
         query = "SELECT a FROM Approval a " +
-                "WHERE a.approve IS NULL ")
+                "WHERE a.approve IS NULL \n" +
+                "ORDER BY a.createdDate DESC ")
 @NamedQuery(name = "Approval.findAllNotNull",
         query = "SELECT a FROM Approval a " +
-                "WHERE a.approve IS NOT NULL ")
+                "WHERE a.approve IS NOT NULL \n" +
+                "ORDER BY a.createdDate DESC ")
 @NamedQuery(name = "Approval.findAllApproved",
         query = "SELECT a FROM Approval a " +
-                "WHERE a.approve = true ")
+                "WHERE a.approve = true \n" +
+                "ORDER BY a.createdDate DESC ")
 @NamedQuery(name = "Approval.findAllRejected",
         query = "SELECT a FROM Approval a " +
-                "WHERE a.approve = false ")
+                "WHERE a.approve = false \n" +
+                "ORDER BY a.createdDate DESC ")
 @Where(clause = "is_deleted = 0")
 public class Approval extends TimeStamp {
     @GeneratedValue(generator = "approval_id", strategy = GenerationType.IDENTITY)

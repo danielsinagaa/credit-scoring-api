@@ -42,7 +42,7 @@ public class AbstractService <T, ID> implements ServiceInterface<T, ID> {
     @Override
     public Page<T> findAll(T search, int page, int size, Sort.Direction direction) {
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "id") : Sort.by("id");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
 
         ExampleMatcher matcher = ExampleMatcher.matchingAll()
                 .withIgnoreCase()

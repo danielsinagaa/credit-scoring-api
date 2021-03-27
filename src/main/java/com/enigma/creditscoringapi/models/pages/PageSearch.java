@@ -8,7 +8,7 @@ public class PageSearch {
     @Max(100)
     private Integer size =  50;
     private Integer page = 0;
-    private Direction sort = Direction.ASC;
+    private Direction sort = Direction.DESC;
 
     public Integer getPage() {
         return page;

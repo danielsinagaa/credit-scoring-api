@@ -21,25 +21,25 @@ public class ReportService extends AbstractService<TransactionReport, String> {
 
     public Page<TransactionReport> findAllContract(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllContract(PageRequest.of(page, size, sort));
     }
 
     public Page<TransactionReport> findAllNon(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllNon(PageRequest.of(page, size, sort));
     }
 
     public Page<TransactionReport> findAllRegular(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllRegular(PageRequest.of(page, size, sort));
     }
 
     public Page<TransactionReport> findAllBySubmitter(String submitter,int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllBySubmitter(submitter, PageRequest.of(page, size, sort));
     }
 }

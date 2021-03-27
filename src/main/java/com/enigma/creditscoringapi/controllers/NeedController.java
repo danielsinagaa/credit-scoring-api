@@ -1,11 +1,13 @@
 package com.enigma.creditscoringapi.controllers;
 
 import com.enigma.creditscoringapi.entity.NeedType;
+import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.NeedTypeRequest;
 import com.enigma.creditscoringapi.models.NeedTypeResponse;
 import com.enigma.creditscoringapi.models.pages.PageSearch;
 import com.enigma.creditscoringapi.models.pages.PagedList;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
+import com.enigma.creditscoringapi.repository.NeedTypeRepository;
 import com.enigma.creditscoringapi.services.NeedTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,17 @@ public class NeedController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private NeedTypeRepository repository;
+
     @PostMapping
     public ResponseMessage add(@RequestBody NeedTypeRequest request){
-        NeedType needType = new NeedType(request.getType());
+
+        if (repository.existsByType(request.getType().toUpperCase())){
+            return new ResponseMessage(400, "loan purpose already exist", "loan purpose already exist");
+        }
+
+        NeedType needType = new NeedType(request.getType().toUpperCase());
         service.save(needType);
 
         return ResponseMessage.success(needType);
@@ -37,14 +47,31 @@ public class NeedController {
     public ResponseMessage edit(@PathVariable String id, @RequestBody NeedTypeRequest request){
         NeedType needType = service.findById(id);
 
+        if (needType == null) throw new EntityNotFoundException();
+
         needType.setType(request.getType());
         service.save(needType);
 
         return ResponseMessage.success(needType);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseMessage delete(@PathVariable String id){
+        NeedType needType = service.findById(id);
+
+        if (needType == null) throw new EntityNotFoundException();
+
+        service.softDelete(id);
+
+        return ResponseMessage.success(needType);
+    }
+
     @GetMapping("/{id}")
     public ResponseMessage byId(@PathVariable String id){
+        NeedType needType = service.findById(id);
+
+        if (needType == null) throw new EntityNotFoundException();
+
         return ResponseMessage.success(service.findById(id));
     }
 

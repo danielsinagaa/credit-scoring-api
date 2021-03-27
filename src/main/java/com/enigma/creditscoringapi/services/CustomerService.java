@@ -26,25 +26,25 @@ public class CustomerService extends AbstractService<Customer, String> {
 
     public Page<Customer> findAllByAdmin(String username, int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllBySubmitter(username, PageRequest.of(page, size, sort));
     }
 
     public Page<Customer> findAllContract(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllContract(PageRequest.of(page, size, sort));
     }
 
     public Page<Customer> findAllNon(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllNon(PageRequest.of(page, size, sort));
     }
 
     public Page<Customer> findAllRegular(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "name") : Sort.by("name");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllRegular(PageRequest.of(page, size, sort));
     }
 }
