@@ -6,7 +6,6 @@ import com.enigma.creditscoringapi.models.UserResponse;
 import com.enigma.creditscoringapi.models.responses.ResponseMessage;
 import com.enigma.creditscoringapi.repository.UsersRepository;
 import com.enigma.creditscoringapi.services.RoleService;
-import com.enigma.creditscoringapi.services.SendEmailService;
 import com.enigma.creditscoringapi.services.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,6 @@ import java.security.Principal;
 public class UserController {
     @Autowired
     ModelMapper modelMapper;
-
-    @Autowired
-    private SendEmailService sendEmailService;
 
     @Autowired
     UsersService service;

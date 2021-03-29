@@ -58,8 +58,8 @@ public class MasterController {
             throw new EntityNotFoundException();
         }
 
-        users.setEmail(users.getEmail() + " DELETED");
-        users.setUsername(users.getUsername() + " DELETED");
+        users.setEmail(users.getEmail() + "*");
+        users.setUsername(users.getUsername() + "*");
         service.save(users);
 
         UserResponse response = modelMapper.map(users, UserResponse.class);

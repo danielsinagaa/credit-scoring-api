@@ -61,6 +61,9 @@ public class NeedController {
 
         if (needType == null) throw new EntityNotFoundException();
 
+        needType.setType(needType.getType() + "*");
+        service.save(needType);
+
         service.softDelete(id);
 
         return ResponseMessage.success(needType);
