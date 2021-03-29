@@ -17,6 +17,12 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     Page<Customer> findAllRegular(Pageable pageable);
 
+    Page<Customer> findAllContractBySubmitter(String username, Pageable pageable);
+
+    Page<Customer> findAllNonBySubmitter(String username, Pageable pageable);
+
+    Page<Customer> findAllRegularBySubmitter(String username, Pageable pageable);
+
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE customer u SET u.is_deleted = true WHERE u.id = ?1")
     void softDelete(String id);

@@ -10,15 +10,21 @@ import javax.persistence.*;
 @Entity
 @Table
 @Data
-@Where(clause="is_deleted = 0")
+@Where(clause = "is_deleted = 0")
 @NamedQuery(name = "Customer.findAllBySubmitter",
-query = "SELECT c FROM Customer c WHERE c.submitter = ?1")
+        query = "SELECT c FROM Customer c WHERE c.submitter = ?1")
 @NamedQuery(name = "Customer.findAllContract",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT")
 @NamedQuery(name = "Customer.findAllNon",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.NON")
 @NamedQuery(name = "Customer.findAllRegular",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR")
+@NamedQuery(name = "Customer.findAllContractBySubmitter",
+        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT AND c.submitter = ?1")
+@NamedQuery(name = "Customer.findAllNonBySubmitter",
+        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.NON AND c.submitter = ?1")
+@NamedQuery(name = "Customer.findAllRegularBySubmitter",
+        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR AND c.submitter = ?1")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Customer extends TimeStamp {
     @GeneratedValue(generator = "customer_id", strategy = GenerationType.IDENTITY)

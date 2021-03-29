@@ -65,7 +65,7 @@ public class ApprovalController {
         return ResponseMessage.success(response);
     }
 
-    @GetMapping("/staff/{id}")
+    @GetMapping("/principal/{id}")
     public ResponseMessage findByIdStaff(@PathVariable String id) {
         Approval entity = service.findById(id);
         if (entity == null) {
@@ -129,7 +129,7 @@ public class ApprovalController {
         return getResponseMessage(entityPage);
     }
 
-    @GetMapping("/staff")
+    @GetMapping("/principal")
     public ResponseMessage findAllByStaff(PageSearch search, Principal principal) {
         Page<Approval> entityPage = service.findAllByAdmin(principal.getName(), search.getPage(), search.getSize(), search.getSort());
 

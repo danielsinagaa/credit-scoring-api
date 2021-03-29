@@ -37,9 +37,9 @@ public class UserController {
     @Autowired
     RoleService roleService;
 
-    @PatchMapping("/{id}")
-    public ResponseMessage editUser(@PathVariable String id, @RequestBody EditUsers edit, Principal principal) {
-        Users user = service.findById(id);
+    @PatchMapping
+    public ResponseMessage editUser(@RequestBody EditUsers edit, Principal principal) {
+        Users user = service.findByUsername(principal.getName());
 
         if (!user.getUsername().equals(principal.getName()) ) {
             return new ResponseMessage(400, "Bad Request", "id not match with current user");
@@ -53,9 +53,9 @@ public class UserController {
         return ResponseMessage.success(response);
     }
 
-    @PatchMapping("/password/{id}")
-    public ResponseMessage changePassword(@PathVariable String id, @RequestBody EditUsers edit, Principal principal) {
-        Users user = service.findById(id);
+    @PatchMapping("/password")
+    public ResponseMessage changePassword(@RequestBody EditUsers edit, Principal principal) {
+        Users user = service.findByUsername(principal.getName());
 
         if (!user.getUsername().equals(principal.getName())) {
             return new ResponseMessage(400, "Bad Request", "id not match with current user");

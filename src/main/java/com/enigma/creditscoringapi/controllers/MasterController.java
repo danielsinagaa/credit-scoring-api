@@ -2,7 +2,6 @@ package com.enigma.creditscoringapi.controllers;
 
 import com.enigma.creditscoringapi.entity.Role;
 import com.enigma.creditscoringapi.entity.Users;
-import com.enigma.creditscoringapi.entity.enums.ERole;
 import com.enigma.creditscoringapi.exceptions.EntityNotFoundException;
 import com.enigma.creditscoringapi.models.ReportResponse;
 import com.enigma.creditscoringapi.models.SignUpRequest;
@@ -84,9 +83,15 @@ public class MasterController {
 
         modelMapper.map(request, entity);
 
+        List<Role> roles = new ArrayList<>();
+
+        roles.add(roleService.findRoleByName(request.getRole()));
+
+        entity.setRoles(roles);
+
         service.save(entity);
 
-        sendEmailService.editUser(entity.getUsername(), entity.getPassword(), entity.getEmail());
+        sendEmailService.editUser(entity.getUsername(), entity.getPassword(), entity.getRoles().get(0).getName(), entity.getEmail());
 
         return ResponseMessage.success(entity);
     }
@@ -116,7 +121,7 @@ public class MasterController {
         }
 
         UserResponse response = modelMapper.map(users, UserResponse.class);
-        response.setRole(response.getRoles().get(0).getName().name());
+        response.setRole(response.getRoles().get(0).getName());
 
         return ResponseMessage.success(response);
     }
@@ -148,16 +153,7 @@ public class MasterController {
 
         List<Role> roles = new ArrayList<>();
 
-        if (request.getRole().equals("STAFF")) {
-            Role staff = roleService.findRoleByName(ERole.STAFF);
-            roles.add(staff);
-        } else if (request.getRole().equals("SUPERVISOR")) {
-            Role supervisor = roleService.findRoleByName(ERole.SUPERVISOR);
-            roles.add(supervisor);
-        } else {
-            Role master = roleService.findRoleByName(ERole.MASTER);
-            roles.add(master);
-        }
+        roles.add(roleService.findRoleByName(request.getRole()));
 
         user.setRoles(roles);
         repository.save(user);
@@ -203,7 +199,7 @@ public class MasterController {
                 .collect(Collectors.toList());
 
         for (UserResponse u : responses){
-            u.setRole(u.getRoles().get(0).getName().name());
+            u.setRole(u.getRoles().get(0).getName());
         }
 
         PagedList<ReportResponse> response = new PagedList(responses, users.getNumber(),

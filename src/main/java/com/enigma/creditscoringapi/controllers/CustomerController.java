@@ -104,7 +104,7 @@ public class CustomerController {
         }
 
         service.softDelete(id);
-        entity.setIdNumber(Long.valueOf("10" + entity.getIdNumber() + "000"));
+        entity.setIdNumber(Long.valueOf("404" + entity.getIdNumber()));
 
         service.save(entity);
 
@@ -158,7 +158,7 @@ public class CustomerController {
     }
 
     @GetMapping("/contract")
-    public ResponseMessage findAlltype(@Valid PageSearch request) {
+    public ResponseMessage contract(@Valid PageSearch request) {
         Page<Customer> entityPage = service.findAllContract(request.getPage(),
                 request.getSize(), request.getSort());
         List<Customer> entities = entityPage.toList();
@@ -174,7 +174,38 @@ public class CustomerController {
         return ResponseMessage.success(data);
     }
 
-    @GetMapping("/staff")
+    @GetMapping("/non/principal")
+    public ResponseMessage nonBySubmitter(PageSearch search, Principal principal) {
+        Page<Customer> entityPage = service.findAllNonBySubmitter(principal.getName(), search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/regular/principal")
+    public ResponseMessage regularBySubmitter(PageSearch search, Principal principal) {
+        Page<Customer> entityPage = service.findAllRegularBySubmitter(principal.getName(), search.getPage(), search.getSize(), search.getSort());
+
+        return getResponseMessage(entityPage);
+    }
+
+    @GetMapping("/contract/principal")
+    public ResponseMessage contractBySubmitter(@Valid PageSearch request, Principal principal) {
+        Page<Customer> entityPage = service.findAllContractBySubmitter(principal.getName(), request.getPage(),
+                request.getSize(), request.getSort());
+        List<Customer> entities = entityPage.toList();
+
+        List<ContractResponse> models = entities.stream()
+                .map(e -> modelMapper.map(e, ContractResponse.class))
+                .collect(Collectors.toList());
+
+        PagedList<ContractResponse> data = new PagedList(models,
+                entityPage.getNumber(), entityPage.getSize(),
+                entityPage.getTotalElements());
+
+        return ResponseMessage.success(data);
+    }
+
+    @GetMapping("/principal")
     public ResponseMessage findAllByAdmin(@Valid PageSearch request, Principal principal) {
         Page<Customer> entityPage = service.findAllByAdmin(principal.getName(), request.getPage(),
                 request.getSize(), request.getSort());

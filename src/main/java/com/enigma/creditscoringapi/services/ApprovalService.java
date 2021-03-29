@@ -33,7 +33,7 @@ public class ApprovalService extends AbstractService<Approval, String> {
 
     public Page<Approval> findAllNotNull(int page, int size, Sort.Direction direction){
         Sort sort = Sort.Direction.DESC.equals(direction) ?
-                Sort.by(direction, "modifiedDate") : Sort.by("createdDate");
+                Sort.by(direction, "createdDate") : Sort.by("createdDate");
         return repository.findAllNotNull(PageRequest.of(page, size, sort));
     }
 
