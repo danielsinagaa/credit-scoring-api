@@ -111,6 +111,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/customer/contract/principal").hasAnyAuthority(inputCustomer)
                 .antMatchers(HttpMethod.GET,"/customer/regular/principal").hasAnyAuthority(inputCustomer)
                 .antMatchers(HttpMethod.GET,"/customer/non/principal").hasAnyAuthority(inputCustomer)
+                .antMatchers(HttpMethod.POST,"/customer").hasAnyAuthority(inputCustomer)
                 .antMatchers("/customer/**").hasAnyAuthority(inputCustomer)
                 .antMatchers(HttpMethod.POST,"/transaction").hasAnyAuthority(inputTransaction)
                 .antMatchers(HttpMethod.GET,"/approval").hasAnyAuthority(readAllApproval)
@@ -121,11 +122,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/approval/**").hasAnyAuthority(approveTransaction)
                 .antMatchers(HttpMethod.PATCH,"/approval/**").hasAnyAuthority(approveTransaction)
                 .antMatchers(HttpMethod.GET, "/need").hasAnyAuthority(allRoles)
+                .antMatchers(HttpMethod.GET, "/total").hasAnyAuthority(allRoles)
                 .antMatchers(HttpMethod.PATCH, "/users/**").hasAnyAuthority(allRoles)
                 .antMatchers(HttpMethod.GET, "/users/email/**").hasAnyAuthority(allRoles)
                 .antMatchers(HttpMethod.GET, "/users/password/**").hasAnyAuthority(allRoles)
-                .antMatchers(HttpMethod.GET, "/report").hasAnyAuthority(readAllReport)
-                .antMatchers(HttpMethod.GET, "/report/principal").hasAnyAuthority(readAllReportBySubmitter)
+                .antMatchers( "/users/**").hasAnyAuthority(allRoles)
+                .antMatchers(HttpMethod.GET, "/report").hasAnyAuthority(readAllReports)
+                .antMatchers(HttpMethod.GET, "/report/principal").hasAnyAuthority(readAllReports)
                 .antMatchers(HttpMethod.GET, "/report/**").hasAnyAuthority(readAllReports)
                 .anyRequest().hasAnyAuthority(master);
 

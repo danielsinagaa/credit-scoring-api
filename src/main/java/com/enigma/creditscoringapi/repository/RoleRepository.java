@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public interface RoleRepository extends JpaRepository<Role, String> {
     Optional<Role> findByName(String name);
 
+    @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "UPDATE role u SET u.is_deleted = true WHERE u.id = ?1")
     void softDelete(String id);

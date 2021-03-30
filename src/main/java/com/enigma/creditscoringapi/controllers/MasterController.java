@@ -58,8 +58,8 @@ public class MasterController {
             throw new EntityNotFoundException();
         }
 
-        users.setEmail(users.getEmail() + "*");
-        users.setUsername(users.getUsername() + "*");
+        users.setEmail(users.getEmail() + randomPassword());
+        users.setUsername(users.getUsername() + randomPassword());
         service.save(users);
 
         UserResponse response = modelMapper.map(users, UserResponse.class);
@@ -87,11 +87,13 @@ public class MasterController {
 
         roles.add(roleService.findRoleByName(request.getRole()));
 
+        entity.setPassword(encoder.encode(request.getPassword()));
+
         entity.setRoles(roles);
 
         service.save(entity);
 
-        sendEmailService.editUser(entity.getUsername(), entity.getPassword(), entity.getRoles().get(0).getName(), entity.getEmail());
+        sendEmailService.editUser(entity.getUsername(), request.getPassword(), entity.getRoles().get(0).getName(), entity.getEmail());
 
         return ResponseMessage.success(entity);
     }

@@ -13,9 +13,9 @@ VALUES ( 'f906a295847742309a4de4101dea0c55',
         current_date );
 
 INSERT
-IGNORE role (id, name, input_customer, read_all_customer, input_transaction, read_all_transaction, approve_transaction, read_all_report, read_all_report_by_transaction, master)
+IGNORE role (id, name, is_deleted, input_customer, read_all_customer, input_transaction, read_all_transaction, approve_transaction, read_all_report, read_all_report_by_transaction, master)
 VALUES ('c30f9a16859611eb8dcd0242ac130003',
-                      'MASTER', true, true, true, true, true, true, true, true);
+                      'MASTER', false, false, false, false, false, false, false, false, true);
 
 INSERT
 ignore users_roles (user_id, role_id)

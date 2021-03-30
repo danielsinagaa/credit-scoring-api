@@ -2,6 +2,7 @@ package com.enigma.creditscoringapi.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -32,6 +33,7 @@ import javax.persistence.*;
 @Entity
 @Table
 @Data
+@Where(clause="is_deleted = 0")
 public class Role extends TimeStamp{
     @Id
     @GenericGenerator(name = "id_role", strategy = "uuid2")

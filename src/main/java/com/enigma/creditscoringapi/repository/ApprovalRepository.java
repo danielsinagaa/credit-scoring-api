@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ApprovalRepository extends JpaRepository<Approval, String> {
 
     Page<Approval> findAllByStaff(String username, Pageable pageable);
@@ -16,4 +18,10 @@ public interface ApprovalRepository extends JpaRepository<Approval, String> {
     Page<Approval> findAllApproved(Pageable pageable);
 
     Page<Approval> findAllRejected(Pageable pageable);
+
+    List<Approval> findAllApproved();
+
+    List<Approval> findAllRejected();
+
+    List<Approval> findAllApproval();
 }

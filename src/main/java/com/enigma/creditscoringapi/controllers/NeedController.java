@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -61,7 +62,7 @@ public class NeedController {
 
         if (needType == null) throw new EntityNotFoundException();
 
-        needType.setType(needType.getType() + "*");
+        needType.setType(needType.getType() + randomPassword());
         service.save(needType);
 
         service.softDelete(id);
@@ -92,5 +93,20 @@ public class NeedController {
                 entityPage.getSize(), entityPage.getTotalElements());
 
         return ResponseMessage.success(response);
+    }
+
+    private String randomPassword() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+
+        while (salt.length() < 10) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+
+        String saltStr = salt.toString().toLowerCase();
+        return saltStr;
     }
 }

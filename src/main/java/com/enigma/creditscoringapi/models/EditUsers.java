@@ -13,7 +13,7 @@ public class EditUsers {
 
     private String oldPassword;
 
-    private String profile_password;
+    private String profilePicture;
 
     private String username;
 }

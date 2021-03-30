@@ -26,6 +26,10 @@ import javax.persistence.*;
         query = "SELECT a FROM Approval a " +
                 "WHERE a.approve = true \n" +
                 "ORDER BY a.createdDate DESC ")
+@NamedQuery(name = "Approval.findAllApproval",
+        query = "SELECT a FROM Approval a " +
+                "WHERE a.isDeleted = false \n" +
+                "ORDER BY a.createdDate DESC ")
 @NamedQuery(name = "Approval.findAllRejected",
         query = "SELECT a FROM Approval a " +
                 "WHERE a.approve = false \n" +

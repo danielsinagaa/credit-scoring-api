@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Random;
+
 @CrossOrigin
 @RequestMapping("/role")
 @RestController
@@ -54,9 +56,23 @@ public class RoleController {
             throw new EntityNotFoundException();
         }
 
-        role.setName(role.getName() + "*");
+        role.setName(role.getName() + randomPassword());
 
         repository.softDelete(id);
+
+        return ResponseMessage.success(role);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseMessage editRole(@PathVariable String id, @RequestBody RoleRequest request){
+        Role role = service.findById(id);
+
+        if (role == null){
+            throw new EntityNotFoundException();
+        }
+
+        modelMapper.map(request, role);
+        service.save(role);
 
         return ResponseMessage.success(role);
     }
@@ -69,5 +85,20 @@ public class RoleController {
         service.save(entity);
 
         return ResponseMessage.success(entity);
+    }
+
+    private String randomPassword() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+
+        while (salt.length() < 10) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+
+        String saltStr = salt.toString().toLowerCase();
+        return saltStr;
     }
 }

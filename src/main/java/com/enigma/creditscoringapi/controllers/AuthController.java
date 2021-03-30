@@ -1,5 +1,6 @@
 package com.enigma.creditscoringapi.controllers;
 
+import com.enigma.creditscoringapi.entity.Role;
 import com.enigma.creditscoringapi.entity.Users;
 import com.enigma.creditscoringapi.models.JwtResponse;
 import com.enigma.creditscoringapi.models.LoginRequest;
@@ -77,13 +78,23 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+        Role role = service.findRoleByName(roles.get(0));
+
         JwtResponse response = new JwtResponse(
                 jwt,
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles.get(0),
                 user.getFullName(),
-                user.getId());
+                user.getId(),
+                role.getInputCustomer(),
+                role.getReadAllCustomer(),
+                role.getInputTransaction(),
+                role.getReadAllTransaction(),
+                role.getApproveTransaction(),
+                role.getReadAllReport(),
+                role.getReadAllReportByTransaction(),
+                role.getMaster());
 
         return ResponseMessage.success(response);
     }

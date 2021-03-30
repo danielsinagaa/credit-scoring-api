@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -104,7 +105,7 @@ public class CustomerController {
         }
 
         service.softDelete(id);
-        entity.setIdNumber(Long.valueOf("404" + entity.getIdNumber()));
+        entity.setIdNumber(Long.valueOf(new Random().nextInt(1000) + "1" + entity.getIdNumber()));
 
         service.save(entity);
 

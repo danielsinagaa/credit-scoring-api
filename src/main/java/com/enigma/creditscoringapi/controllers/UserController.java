@@ -41,10 +41,29 @@ public class UserController {
             return new ResponseMessage(400, "Bad Request", "id not match with current user");
         }
 
-        user = modelMapper.map(edit, Users.class);
+        user.setEmail(edit.getEmail());
+        user.setFullName(edit.getFullName());
+        user.setProfilePicture(edit.getProfilePicture());
+        user.setUsername(edit.getUsername());
+
         service.save(user);
 
         UserResponse response = modelMapper.map(user, UserResponse.class);
+        response.setRole(user.getRoles().get(0).getName());
+
+        return ResponseMessage.success(response);
+    }
+
+    @GetMapping
+    public ResponseMessage getMyUser(Principal principal) {
+        Users user = service.findByUsername(principal.getName());
+
+        if (!user.getUsername().equals(principal.getName()) ) {
+            return new ResponseMessage(400, "Bad Request", "id not match with current user");
+        }
+
+        UserResponse response = modelMapper.map(user, UserResponse.class);
+        response.setRole(user.getRoles().get(0).getName());
 
         return ResponseMessage.success(response);
     }
@@ -56,8 +75,6 @@ public class UserController {
         if (!user.getUsername().equals(principal.getName())) {
             return new ResponseMessage(400, "Bad Request", "id not match with current user");
         }
-
-        System.out.println(encoder.matches(edit.getOldPassword(), user.getPassword()));
 
         if (!encoder.matches(edit.getOldPassword(), user.getPassword())) {
             return new ResponseMessage(400, "wrong password", false);
