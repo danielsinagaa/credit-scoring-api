@@ -21,7 +21,7 @@ import javax.persistence.*;
 @NamedQuery(name = "Transaction.findAllRegular",
         query = "SELECT t FROM Transaction t\n" +
                 "JOIN Customer c ON (c.id = t.customer)\n" +
-                "WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR")
+                "WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.EMPLOYEE")
 public class Transaction extends TimeStamp{
 
     @GeneratedValue(generator = "transaction_id", strategy = GenerationType.IDENTITY)

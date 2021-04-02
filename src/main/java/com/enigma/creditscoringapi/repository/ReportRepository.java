@@ -13,5 +13,9 @@ public interface ReportRepository extends JpaRepository<TransactionReport, Strin
 
     Page<TransactionReport> findAllRegular(Pageable pageable);
 
+    Page<TransactionReport> findAllRejected(Pageable pageable);
+
+    Page<TransactionReport> findAllApproved(Pageable pageable);
+
     Page<TransactionReport> findAllBySubmitter(String submitter, Pageable pageable);
 }

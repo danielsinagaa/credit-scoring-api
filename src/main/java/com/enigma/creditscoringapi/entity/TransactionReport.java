@@ -10,13 +10,21 @@ import java.time.LocalDate;
 @Entity
 @Table
 @Data
-@Where(clause="is_deleted = 0")
+@Where(clause = "is_deleted = 0")
+@NamedQuery(name = "TransactionReport.findAllRejected",
+        query = "SELECT tr FROM TransactionReport tr " +
+                "JOIN Approval a ON (a.id = tr.approval) " +
+                "WHERE a.approve = false ")
+@NamedQuery(name = "TransactionReport.findAllApproved",
+        query = "SELECT tr FROM TransactionReport tr " +
+                "JOIN Approval a ON (a.id = tr.approval) " +
+                "WHERE a.approve = true ")
 @NamedQuery(name = "TransactionReport.findAllBySubmitter",
-query = "SELECT tr FROM TransactionReport tr\n" +
-        "JOIN Approval a ON (a.id = tr.approval)\n" +
-        "JOIN Transaction t ON (t.id = a.transaction)\n" +
-        "WHERE t.submitter =?1\n " +
-        "ORDER BY tr.createdDate DESC" )
+        query = "SELECT tr FROM TransactionReport tr\n" +
+                "JOIN Approval a ON (a.id = tr.approval)\n" +
+                "JOIN Transaction t ON (t.id = a.transaction)\n" +
+                "WHERE t.submitter =?1\n " +
+                "ORDER BY tr.createdDate DESC")
 @NamedQuery(name = "TransactionReport.findAllContract",
         query = "SELECT tr FROM TransactionReport tr\n" +
                 "JOIN Approval a ON (a.id = tr.approval)\n" +
@@ -34,8 +42,8 @@ query = "SELECT tr FROM TransactionReport tr\n" +
                 "JOIN Approval a ON (a.id = tr.approval)\n" +
                 "JOIN Transaction t ON (t.id = a.transaction)\n" +
                 "JOIN Customer c ON (c.id = t.customer)\n" +
-                "WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR")
-public class TransactionReport extends TimeStamp{
+                "WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.EMPLOYEE")
+public class TransactionReport extends TimeStamp {
 
     @GeneratedValue(generator = "transaction_report_id", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "transaction_report_id", strategy = "uuid")

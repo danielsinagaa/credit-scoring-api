@@ -2,7 +2,7 @@ package com.enigma.creditscoringapi.entity.enums;
 
 public enum EmployeeType {
     NON("NON"),
-    REGULAR("REGULAR"),
+    EMPLOYEE("EMPLOYEE"),
     CONTRACT("CONTRACT");
 
     private String type;

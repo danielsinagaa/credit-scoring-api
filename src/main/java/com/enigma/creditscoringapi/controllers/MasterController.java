@@ -16,7 +16,6 @@ import com.enigma.creditscoringapi.services.UsersService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,7 +100,7 @@ public class MasterController {
     @GetMapping("/notverified")
     public ResponseMessage notverified(PageSearch search) {
 
-        Page<Users> users = repository.findAllNotVerified(PageRequest.of(search.getPage(), search.getSize(), search.getSort()));
+        Page<Users> users = service.findAllNotVerified(search.getPage(), search.getSize(), search.getSort());
 
         return getResponseMessage(users);
     }
@@ -109,7 +108,7 @@ public class MasterController {
     @GetMapping("/verified")
     public ResponseMessage allVerified(PageSearch search) {
 
-        Page<Users> users = repository.findAllVerified(PageRequest.of(search.getPage(), search.getSize(), search.getSort()));
+        Page<Users> users = service.findAllVerified(search.getPage(), search.getSize(), search.getSort());
 
         return getResponseMessage(users);
     }

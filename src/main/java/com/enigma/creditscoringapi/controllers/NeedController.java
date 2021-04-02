@@ -50,7 +50,7 @@ public class NeedController {
 
         if (needType == null) throw new EntityNotFoundException();
 
-        needType.setType(request.getType());
+        needType.setType(request.getType().toUpperCase());
         service.save(needType);
 
         return ResponseMessage.success(needType);

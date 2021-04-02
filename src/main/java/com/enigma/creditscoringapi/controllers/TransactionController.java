@@ -86,7 +86,7 @@ public class TransactionController {
                 Boolean employeeCriteria = date.isBefore(response.getContractEnd());
                 entity.setEmployeeCriteria(employeeCriteria);
                 break;
-            case REGULAR:
+            case EMPLOYEE:
                 entity.setEmployeeCriteria(true);
                 break;
             default:

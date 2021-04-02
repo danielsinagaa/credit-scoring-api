@@ -18,6 +18,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -64,6 +68,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         String[] inputCustomer = new String[roleService.findAllInputCustomer().size()];
         inputCustomer = roleService.findAllInputCustomer().toArray(inputCustomer);
 
+        Set<String> allCustomer = new HashSet<>(Arrays.asList(readAllCustomer));
+        allCustomer.addAll(Arrays.asList(inputCustomer));
+
+        String[] customerAll = new String[allCustomer.size()];
+        allCustomer.toArray(customerAll);
+
         String[] inputTransaction = new String[roleService.findAllInputTransaction().size()];
         inputTransaction = roleService.findAllInputTransaction().toArray(inputTransaction);
 
@@ -103,33 +113,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/customer").hasAnyAuthority(readAllCustomer)
-                .antMatchers(HttpMethod.GET,"/customer/contract").hasAnyAuthority(readAllCustomer)
-                .antMatchers(HttpMethod.GET,"/customer/regular").hasAnyAuthority(readAllCustomer)
-                .antMatchers(HttpMethod.GET,"/customer/non").hasAnyAuthority(readAllCustomer)
+                .antMatchers(HttpMethod.GET,"/customer").hasAnyAuthority(customerAll)
+                .antMatchers(HttpMethod.GET,"/customer/contract").hasAnyAuthority(customerAll)
+                .antMatchers(HttpMethod.GET,"/customer/regular").hasAnyAuthority(customerAll)
+                .antMatchers(HttpMethod.GET,"/customer/non").hasAnyAuthority(customerAll)
                 .antMatchers(HttpMethod.GET,"/customer/principal").hasAnyAuthority(inputCustomer)
                 .antMatchers(HttpMethod.GET,"/customer/contract/principal").hasAnyAuthority(inputCustomer)
                 .antMatchers(HttpMethod.GET,"/customer/regular/principal").hasAnyAuthority(inputCustomer)
                 .antMatchers(HttpMethod.GET,"/customer/non/principal").hasAnyAuthority(inputCustomer)
                 .antMatchers(HttpMethod.POST,"/customer").hasAnyAuthority(inputCustomer)
-                .antMatchers("/customer/**").hasAnyAuthority(inputCustomer)
+                .antMatchers("/customer/**").hasAnyAuthority(customerAll)
                 .antMatchers(HttpMethod.POST,"/transaction").hasAnyAuthority(inputTransaction)
                 .antMatchers(HttpMethod.GET,"/approval").hasAnyAuthority(readAllApproval)
                 .antMatchers(HttpMethod.GET,"/approval/waiting").hasAnyAuthority(readAllApproval)
                 .antMatchers(HttpMethod.GET,"/approval/approved").hasAnyAuthority(readAllApproval)
                 .antMatchers(HttpMethod.GET,"/approval/rejected").hasAnyAuthority(readAllApproval)
                 .antMatchers(HttpMethod.GET,"/approval/principal/**").hasAnyAuthority(inputTransaction)
-                .antMatchers(HttpMethod.GET,"/approval/**").hasAnyAuthority(approveTransaction)
-                .antMatchers(HttpMethod.PATCH,"/approval/**").hasAnyAuthority(approveTransaction)
+                .antMatchers(HttpMethod.GET,"/approval/**").hasAnyAuthority(readAllApproval)
+                .antMatchers(HttpMethod.PATCH,"/approval/**").hasAnyAuthority(readAllApproval)
                 .antMatchers(HttpMethod.GET, "/need").hasAnyAuthority(allRoles)
                 .antMatchers(HttpMethod.GET, "/total").hasAnyAuthority(allRoles)
-                .antMatchers(HttpMethod.PATCH, "/users/**").hasAnyAuthority(allRoles)
-                .antMatchers(HttpMethod.GET, "/users/email/**").hasAnyAuthority(allRoles)
-                .antMatchers(HttpMethod.GET, "/users/password/**").hasAnyAuthority(allRoles)
+                .antMatchers( HttpMethod.PATCH,"/users/**").hasAnyAuthority(allRoles)
                 .antMatchers( "/users/**").hasAnyAuthority(allRoles)
                 .antMatchers(HttpMethod.GET, "/report").hasAnyAuthority(readAllReports)
                 .antMatchers(HttpMethod.GET, "/report/principal").hasAnyAuthority(readAllReports)
-                .antMatchers(HttpMethod.GET, "/report/**").hasAnyAuthority(readAllReports)
+                .antMatchers(HttpMethod.GET, "/report/**").permitAll()
                 .anyRequest().hasAnyAuthority(master);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -18,7 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,22 +102,24 @@ public class AuthController {
     }
 
     @GetMapping("/verification/{token}")
-    public ResponseMessage verification(@PathVariable String token) {
+    public RedirectView verification(@PathVariable String token, HttpServletResponse httpServletResponse) {
         Users user = usersService.findByToken(token);
 
         if (user == null) {
-            return new ResponseMessage(400, "Verification token is not valid.", null);
+            return null;
         } else {
             user.setIsVerified(true);
             usersService.save(user);
-            return new ResponseMessage(200, "Verification token is success.", null);
+            RedirectView redirectView = new RedirectView();
+            redirectView.setUrl("http://localhost:3001/verification");
+            return redirectView;
         }
     }
 
     @GetMapping("/username/{username}")
-    public ResponseMessage existUsername(@PathVariable String username){
+    public ResponseMessage existUsername(@PathVariable String username) {
 
-        if (usersService.existByUsername(username)){
+        if (usersService.existByUsername(username)) {
             return new ResponseMessage(400, "username exist", false);
         }
 
@@ -123,9 +127,9 @@ public class AuthController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseMessage existEmail(@PathVariable String email){
+    public ResponseMessage existEmail(@PathVariable String email) {
 
-        if (usersService.existByEmail(email)){
+        if (usersService.existByEmail(email)) {
             return new ResponseMessage(400, "email exist", false);
         }
 

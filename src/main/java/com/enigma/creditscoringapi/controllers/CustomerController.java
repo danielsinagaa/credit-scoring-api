@@ -52,7 +52,7 @@ public class CustomerController {
         }
 
         switch (request.getEmployeeType()) {
-            case REGULAR:
+            case EMPLOYEE:
                 entity = modelMapper.map(request, RegularEmployee.class);
                 entity.setSubmitter(principal.getName());
                 response = modelMapper.map(entity, CustomerResponse.class);
@@ -126,7 +126,7 @@ public class CustomerController {
             case CONTRACT:
                 response = modelMapper.map(entity, ContractResponse.class);
                 break;
-            case REGULAR:
+            case EMPLOYEE:
             case NON:
                 response = modelMapper.map(entity, CustomerResponse.class);
                 break;

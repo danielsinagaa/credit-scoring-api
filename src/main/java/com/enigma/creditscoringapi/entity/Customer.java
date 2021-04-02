@@ -18,13 +18,13 @@ import javax.persistence.*;
 @NamedQuery(name = "Customer.findAllNon",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.NON")
 @NamedQuery(name = "Customer.findAllRegular",
-        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR")
+        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.EMPLOYEE")
 @NamedQuery(name = "Customer.findAllContractBySubmitter",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.CONTRACT AND c.submitter = ?1")
 @NamedQuery(name = "Customer.findAllNonBySubmitter",
         query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.NON AND c.submitter = ?1")
 @NamedQuery(name = "Customer.findAllRegularBySubmitter",
-        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.REGULAR AND c.submitter = ?1")
+        query = "SELECT c FROM Customer c WHERE c.employeeType = com.enigma.creditscoringapi.entity.enums.EmployeeType.EMPLOYEE AND c.submitter = ?1")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Customer extends TimeStamp {
     @GeneratedValue(generator = "customer_id", strategy = GenerationType.IDENTITY)
